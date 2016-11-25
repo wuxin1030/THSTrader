@@ -59,6 +59,7 @@ namespace THSTrader
 
     public class THSClient
     {
+
         const int WM_ID_COPY = 57634;
         const int WM_ID_BUY = 161;
         const int WM_ID_SELL = 162;
@@ -76,49 +77,82 @@ namespace THSTrader
 
         public int hWnd = 0;
         public int hToolbar = 0;
+        public int hToolbarMarket = 0;
+        public int hToolbarAccount = 0;
         public int hFrame = 0;
         public int hAfxWnd = 0;
         public int hLeft = 0;
         public int hLeftWnd = 0;
         public int hLeftTree = 0;
 
-        public int hBuySellWnd = 0;
+        public int hBuyWnd = 0;
         public int hBuyCodeEdit = 0;
         public int hBuyPriceEdit = 0;
         public int hBuyAmountEdit = 0;
-        public int hBuyStrategyCb = 0;
+        //public int hBuyStrategyCb = 0;
         public int hBuyBtn = 0;
         public int hBuyNameStatic = 0;
         public int hBuyMaxAmountStatic = 0;
-        public int hBuyMarketCB = 0;
+        //public int hBuyMarketCB = 0;
+        public int hBQuoteWnd = 0;
+        public int hBQuoteB1PriceStatic = 0;
+        public int hBQuoteB2PriceStatic = 0;
+        public int hBQuoteB3PriceStatic = 0;
+        public int hBQuoteB4PriceStatic = 0;
+        public int hBQuoteB5PriceStatic = 0;
+        public int hBQuoteS1PriceStatic = 0;
+        public int hBQuoteS2PriceStatic = 0;
+        public int hBQuoteS3PriceStatic = 0;
+        public int hBQuoteS4PriceStatic = 0;
+        public int hBQuoteS5PriceStatic = 0;
+        public int hBQuoteNowPriceStatic = 0;
+        public int hBQuoteMaxPriceStatic = 0;
+        public int hBQuoteMinPriceStatic = 0;
 
+
+        public int hSellWnd = 0;
         public int hSellCodeEdit = 0;
         public int hSellPriceEdit = 0;
         public int hSellAmountEdit = 0;
-        public int hSellStrategyCb = 0;
+        //public int hSellStrategyCb = 0;
         public int hSellBtn = 0;
         public int hSellNameStatic = 0;
         public int hSellMaxAmountStatic = 0;
-        public int hSellMarketCB = 0;
+        //public int hSellMarketCB = 0;
+        public int hSQuoteWnd = 0;
+        public int hSQuoteB1PriceStatic = 0;
+        public int hSQuoteB2PriceStatic = 0;
+        public int hSQuoteB3PriceStatic = 0;
+        public int hSQuoteB4PriceStatic = 0;
+        public int hSQuoteB5PriceStatic = 0;
+        public int hSQuoteS1PriceStatic = 0;
+        public int hSQuoteS2PriceStatic = 0;
+        public int hSQuoteS3PriceStatic = 0;
+        public int hSQuoteS4PriceStatic = 0;
+        public int hSQuoteS5PriceStatic = 0;
+        public int hSQuoteNowPriceStatic = 0;
+        public int hSQuoteMaxPriceStatic = 0;
+        public int hSQuoteMinPriceStatic = 0;
 
-        public int hAvailableBalance = 0;
 
-        public int hQuoteWnd = 0;
-        public int hQuoteB1PriceStatic = 0;
-        public int hQuoteB2PriceStatic = 0;
-        public int hQuoteB3PriceStatic = 0;
-        public int hQuoteB4PriceStatic = 0;
-        public int hQuoteB5PriceStatic = 0;
-        public int hQuoteS1PriceStatic = 0;
-        public int hQuoteS2PriceStatic = 0;
-        public int hQuoteS3PriceStatic = 0;
-        public int hQuoteS4PriceStatic = 0;
-        public int hQuoteS5PriceStatic = 0;
-        public int hQuoteNowPriceStatic = 0;
-        public int hQuoteMaxPriceStatic = 0;
-        public int hQuoteMinPriceStatic = 0;
+        //public int hAvailableBalance = 0;
 
-        public int hBuySellGird = 0;
+        //public int hQuoteWnd = 0;
+        //public int hQuoteB1PriceStatic = 0;
+        //public int hQuoteB2PriceStatic = 0;
+        //public int hQuoteB3PriceStatic = 0;
+        //public int hQuoteB4PriceStatic = 0;
+        //public int hQuoteB5PriceStatic = 0;
+        //public int hQuoteS1PriceStatic = 0;
+        //public int hQuoteS2PriceStatic = 0;
+        //public int hQuoteS3PriceStatic = 0;
+        //public int hQuoteS4PriceStatic = 0;
+        //public int hQuoteS5PriceStatic = 0;
+        //public int hQuoteNowPriceStatic = 0;
+        //public int hQuoteMaxPriceStatic = 0;
+        //public int hQuoteMinPriceStatic = 0;
+
+        //public int hBuySellGird = 0;
 
         public int hWithdrawWnd = 0;
         public int hWithdrawCodeEdit = 0;
@@ -147,98 +181,133 @@ namespace THSTrader
             {
                 List<int> hList = Utility.FindWindowRe(hWnd, 0, "ToolbarWindow32", null, 10);
                 hToolbar = hList.First();
+                hToolbarMarket = Utility.GetDlgItem(Utility.FindWindowEx(hToolbar, 0, "#32770", null), 0x3EB);
+                hToolbarAccount = Utility.GetDlgItem(Utility.FindWindowEx(hToolbar, 0, "#32770", null), 0x3EC);
 
-                hList = Utility.FindWindowRe(hToolbar, 0, "ComboBox", null, 10);
-                foreach (int h in hList)
+                //hList = Utility.FindWindowRe(hToolbar, 0, "ComboBox", null, 10);
+                //foreach (int h in hList)
+                //{
+                string text = Utility.getItemText(hToolbarAccount);
+                if (text == strSHAccount || text == strSZAccount)
                 {
-                    string text = Utility.getItemText(h);
-                    if (text == strSHAccount || text == strSZAccount)
-                    {
-                        string currentCaption = "";
+                    string currentCaption = "";
 
-                        hFrame = Utility.GetDlgItem(hWnd, 0xE900);
-                        hAfxWnd = Utility.GetDlgItem(hFrame, 0xE900);
-                        hLeft = Utility.GetDlgItem(hAfxWnd, 0x81);
-                        hLeftWnd = Utility.GetDlgItem(hLeft, 0xC8);
-                        hLeftTree = Utility.GetDlgItem(hLeftWnd, 0xE81);
+                    hFrame = Utility.GetDlgItem(hWnd, 0xE900);
+                    hAfxWnd = Utility.GetDlgItem(hFrame, 0xE900);
+                    hLeft = Utility.GetDlgItem(hAfxWnd, 0x81);
+                    hLeftWnd = Utility.GetDlgItem(hLeft, 0xC8);
+                    hLeftTree = Utility.GetDlgItem(hLeftWnd, 0x81);
 
-                        Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F6, 0);
-                        hBuySellWnd = WaitForDialog(hFrame, new string[] { "买入股票[F1]", "卖出股票[F2]" }, ref currentCaption);
-                        if (hBuySellWnd <= 0)
-                            throw new Exception("无法定位买卖对话框");
+                    Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
+                    hBuyWnd = WaitForDialog(hFrame, new string[] { "买入股票" }, ref currentCaption);
+                    if (hBuyWnd <= 0)
+                        throw new Exception("无法定位买入对话框");
 
-                        //hBuySellWnd = hDialogWnd;// Utility.GetDlgItem(hFrame, 0xE901);
+                    //hBuySellWnd = hDialogWnd;// Utility.GetDlgItem(hFrame, 0xE901);
 
-                        hBuyCodeEdit = Utility.GetDlgItem(hBuySellWnd, 0x408);
-                        hBuyPriceEdit = Utility.GetDlgItem(hBuySellWnd, 0x409);
-                        hBuyAmountEdit = Utility.GetDlgItem(hBuySellWnd, 0x40A);
-                        hBuyStrategyCb = Utility.GetDlgItem(hBuySellWnd, 0x605);
-                        hBuyBtn = Utility.GetDlgItem(hBuySellWnd, 0x3EE);
-                        hBuyNameStatic = Utility.GetDlgItem(hBuySellWnd, 0x40C);
-                        hBuyMaxAmountStatic = Utility.GetDlgItem(hBuySellWnd, 0x3FA);
-                        hBuyMarketCB = Utility.GetDlgItem(hBuySellWnd, 0xD7B);
+                    hBuyCodeEdit = Utility.GetDlgItem(hBuyWnd, 0x408);
+                    hBuyPriceEdit = Utility.GetDlgItem(hBuyWnd, 0x409);
+                    hBuyAmountEdit = Utility.GetDlgItem(hBuyWnd, 0x40A);
+                    //hBuyStrategyCb = Utility.GetDlgItem(hBuyWnd, 0x605);
+                    hBuyBtn = Utility.GetDlgItem(hBuyWnd, 0x3EE);
+                    hBuyNameStatic = Utility.GetDlgItem(hBuyWnd, 0x40C);
+                    hBuyMaxAmountStatic = Utility.GetDlgItem(hBuyWnd, 0x3FA);
+                    //hBuyMarketCB = Utility.GetDlgItem(hBuyWnd, 0xD7B);
+                    hBQuoteWnd = FindDialog(hBuyWnd, new string[] { "涨停", "跌停" }, ref currentCaption);
+                    hBQuoteB1PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3FA);
+                    hBQuoteB2PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x401);
+                    hBQuoteB3PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x402);
+                    hBQuoteB4PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x40B);
+                    hBQuoteB5PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x40C);
+                    hBQuoteS1PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3FD);
+                    hBQuoteS2PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3Fe);
+                    hBQuoteS3PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3FF);
+                    hBQuoteS4PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x409);
+                    hBQuoteS5PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x408);
+                    hBQuoteNowPriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x400);
+                    hBQuoteMaxPriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x404);
+                    hBQuoteMinPriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x405);
+                    //if (!Utility.getItemText(hBuyBtn).Contains("买入"))
+                    //    throw new Exception("无法定位买入按钮");
 
-                        hSellCodeEdit = Utility.GetDlgItem(hBuySellWnd, 0x40B);
-                        hSellPriceEdit = Utility.GetDlgItem(hBuySellWnd, 0x422);
-                        hSellAmountEdit = Utility.GetDlgItem(hBuySellWnd, 0x40F);
-                        hSellStrategyCb = Utility.GetDlgItem(hBuySellWnd, 0x606);
-                        hSellBtn = Utility.GetDlgItem(hBuySellWnd, 0x3F0);
-                        hSellNameStatic = Utility.GetDlgItem(hBuySellWnd, 0x40D);
-                        hSellMaxAmountStatic = Utility.GetDlgItem(hBuySellWnd, 0x3FB);
-                        hSellMarketCB = Utility.GetDlgItem(hBuySellWnd, 0xD7D);
 
-                        if (!Utility.getItemText(hBuyBtn).Contains("买入")
-                            || !Utility.getItemText(hSellBtn).Contains("卖出"))
-                            throw new Exception("无法定位买入卖出按钮");
+                    Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
+                    hSellWnd = WaitForDialog(hFrame, new string[] { "卖出股票" }, ref currentCaption);
+                    if (hSellWnd <= 0)
+                        throw new Exception("无法定位卖出对话框");
 
+                    hSellCodeEdit = Utility.GetDlgItem(hSellWnd, 0x408);
+                    hSellPriceEdit = Utility.GetDlgItem(hSellWnd, 0x409);
+                    hSellAmountEdit = Utility.GetDlgItem(hSellWnd, 0x40A);
+                    //hSellStrategyCb = Utility.GetDlgItem(hSellWnd, 0x606);
+                    hSellBtn = Utility.GetDlgItem(hSellWnd, 0x3EE);
+                    hSellNameStatic = Utility.GetDlgItem(hSellWnd, 0x40C);
+                    hSellMaxAmountStatic = Utility.GetDlgItem(hSellWnd, 0x40E);
+                    //hSellMarketCB = Utility.GetDlgItem(hSellWnd, 0xD7D);
+                    hSQuoteWnd = FindDialog(hSellWnd, new string[] { "涨停", "跌停" }, ref currentCaption);
+                    hSQuoteB1PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3FA);
+                    hSQuoteB2PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x401);
+                    hSQuoteB3PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x402);
+                    hSQuoteB4PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x40B);
+                    hSQuoteB5PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x40C);
+                    hSQuoteS1PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3FD);
+                    hSQuoteS2PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3Fe);
+                    hSQuoteS3PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3FF);
+                    hSQuoteS4PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x409);
+                    hSQuoteS5PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x408);
+                    hSQuoteNowPriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x400);
+                    hSQuoteMaxPriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x404);
+                    hSQuoteMinPriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x405);
+                    //if (!Utility.getItemText(hSellBtn).Contains("卖出"))
+                    //    throw new Exception("无法定位卖出按钮");
 
-                        hAvailableBalance = Utility.GetDlgItem(hBuySellWnd, 0x40E);//可用余额
+                    //hAvailableBalance = Utility.GetDlgItem(hBuySellWnd, 0x40E);//可用余额
 
-                        hQuoteWnd = FindDialog(hBuySellWnd, new string[] { "涨停", "跌停" }, ref currentCaption);
-                        hQuoteB1PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3FA);
-                        hQuoteB2PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x401);
-                        hQuoteB3PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x402);
-                        hQuoteB4PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x40B);
-                        hQuoteB5PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x40C);
-                        hQuoteS1PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3FD);
-                        hQuoteS2PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3Fe);
-                        hQuoteS3PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3FF);
-                        hQuoteS4PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x409);
-                        hQuoteS5PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x408);
-                        hQuoteNowPriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x400);
-                        hQuoteMaxPriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x404);
-                        hQuoteMinPriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x405);
+                    //hQuoteWnd = FindDialog(hBuySellWnd, new string[] { "涨停", "跌停" }, ref currentCaption);
+                    //hQuoteB1PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3FA);
+                    //hQuoteB2PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x401);
+                    //hQuoteB3PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x402);
+                    //hQuoteB4PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x40B);
+                    //hQuoteB5PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x40C);
+                    //hQuoteS1PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3FD);
+                    //hQuoteS2PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3Fe);
+                    //hQuoteS3PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3FF);
+                    //hQuoteS4PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x409);
+                    //hQuoteS5PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x408);
+                    //hQuoteNowPriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x400);
+                    //hQuoteMaxPriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x404);
+                    //hQuoteMinPriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x405);
 
-                        hBuySellGird = Utility.GetDlgItem(
-                            Utility.GetDlgItem(
-                                Utility.GetDlgItem(hBuySellWnd, 0x417)
-                                , 0xC8)
-                            , 0x417);//表格控件嵌套在两层HexinWnd之内
+                    //hBuySellGird = Utility.GetDlgItem(
+                    //    Utility.GetDlgItem(
+                    //        Utility.GetDlgItem(hBuySellWnd, 0x417)
+                    //        , 0xC8)
+                    //    , 0x417);//表格控件嵌套在两层HexinWnd之内
 
-                        Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F3, 0);
-                        hWithdrawWnd = WaitForDialog(hFrame, new string[] { "在委托记录上用鼠标双击或回车即可撤单" }, ref currentCaption);
-                        if (hWithdrawWnd <= 0)
-                            throw new Exception("无法定位撤单对话框");
+                    Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F3, 0);
+                    hWithdrawWnd = WaitForDialog(hFrame, new string[] { "在委托记录上用鼠标双击或回车即可撤单" }, ref currentCaption);
+                    if (hWithdrawWnd <= 0)
+                        throw new Exception("无法定位撤单对话框");
 
-                        hWithdrawCodeEdit = Utility.GetDlgItem(hWithdrawWnd, 0xD14);
-                        hWithdrawQueryBtn = Utility.GetDlgItem(hWithdrawWnd, 0xD15);
-                        hWithdrawDealSelectedBtn = Utility.GetDlgItem(hWithdrawWnd, 0x44B);
-                        hWithdrawDealAllBtn = Utility.GetDlgItem(hWithdrawWnd, 0x7531);
+                    hWithdrawCodeEdit = Utility.GetDlgItem(hWithdrawWnd, 0xD14);
+                    hWithdrawQueryBtn = Utility.GetDlgItem(hWithdrawWnd, 0xD15);
+                    hWithdrawDealSelectedBtn = Utility.GetDlgItem(hWithdrawWnd, 0x44B);
+                    hWithdrawDealAllBtn = Utility.GetDlgItem(hWithdrawWnd, 0x7531);
 
-                        if (!Utility.getItemText(hWithdrawQueryBtn).Contains("查询代码")
-                            || !Utility.getItemText(hWithdrawDealSelectedBtn).Contains("撤单")
-                            || !Utility.getItemText(hWithdrawDealAllBtn).Contains("全撤"))
-                            throw new Exception("无法定位撤单按钮");
+                    if (!Utility.getItemText(hWithdrawQueryBtn).Contains("查询代码")
+                        || !Utility.getItemText(hWithdrawDealSelectedBtn).Contains("撤单")
+                        || !Utility.getItemText(hWithdrawDealAllBtn).Contains("全撤"))
+                        throw new Exception("无法定位撤单按钮");
 
-                        hWithdrawGrid = Utility.GetDlgItem(
-                            Utility.GetDlgItem(
-                                Utility.GetDlgItem(hWithdrawWnd, 0x417)
-                                , 0xC8)
-                            , 0x417);//表格控件嵌套在两层HexinWnd之内
+                    hWithdrawGrid = Utility.GetDlgItem(
+                        Utility.GetDlgItem(
+                            Utility.GetDlgItem(hWithdrawWnd, 0x417)
+                            , 0xC8)
+                        , 0x417);//表格控件嵌套在两层HexinWnd之内
 
-                        return;
-                    }
+                    return;
                 }
+                //}
             }
 
             throw new Exception("未找到对应的THS窗口。");
@@ -448,7 +517,7 @@ namespace THSTrader
         //    return errCode;
         //}
 
-        private double GetNearlyQuote(string level)
+        private double GetNearlyBQuote(string level)
         {
             level = level.ToLower();
 
@@ -457,151 +526,263 @@ namespace THSTrader
                 case "b5":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteB5PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteB5PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("b4");
+                        return GetNearlyBQuote("b4");
                     }
                 case "b4":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteB4PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteB4PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("b3");
+                        return GetNearlyBQuote("b3");
                     }
                 case "b3":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteB3PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteB3PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("b2");
+                        return GetNearlyBQuote("b2");
                     }
                 case "b2":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteB2PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteB2PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("b1");
+                        return GetNearlyBQuote("b1");
                     }
                 case "b1":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteB1PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteB1PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("now");
+                        return GetNearlyBQuote("now");
                     }
                 case "s5":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteS5PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteS5PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("s4");
+                        return GetNearlyBQuote("s4");
                     }
                 case "s4":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteS4PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteS4PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("s3");
+                        return GetNearlyBQuote("s3");
                     }
                 case "s3":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteS3PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteS3PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("s2");
+                        return GetNearlyBQuote("s2");
                     }
                 case "s2":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteS2PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteS2PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("s1");
+                        return GetNearlyBQuote("s1");
                     }
                 case "s1":
                     try
                     {
-                        return double.Parse(Utility.getItemText(hQuoteS1PriceStatic));
+                        return double.Parse(Utility.getItemText(hBQuoteS1PriceStatic));
                     }
                     catch
                     {
-                        return GetNearlyQuote("now");
+                        return GetNearlyBQuote("now");
                     }
                 default:
-                    return double.Parse(Utility.getItemText(hQuoteNowPriceStatic));
+                    return double.Parse(Utility.getItemText(hBQuoteNowPriceStatic));
             }
         }
+        private double GetNearlySQuote(string level)
+        {
+            level = level.ToLower();
+
+            switch (level)
+            {
+                case "b5":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteB5PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("b4");
+                    }
+                case "b4":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteB4PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("b3");
+                    }
+                case "b3":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteB3PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("b2");
+                    }
+                case "b2":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteB2PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("b1");
+                    }
+                case "b1":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteB1PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("now");
+                    }
+                case "s5":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteS5PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("s4");
+                    }
+                case "s4":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteS4PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("s3");
+                    }
+                case "s3":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteS3PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("s2");
+                    }
+                case "s2":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteS2PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("s1");
+                    }
+                case "s1":
+                    try
+                    {
+                        return double.Parse(Utility.getItemText(hSQuoteS1PriceStatic));
+                    }
+                    catch
+                    {
+                        return GetNearlySQuote("now");
+                    }
+                default:
+                    return double.Parse(Utility.getItemText(hSQuoteNowPriceStatic));
+            }
+        }
+
         public string Buy_Money(string code, double money)
         {
             string level = "s5";//"s3";
             string currentCaption = "";
             int msgResult = 0;
 
-            Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F6, 0);
-            hBuySellWnd = WaitForDialog(hFrame, new string[] { "买入股票[F1]", "卖出股票[F2]" }, ref currentCaption);
-            if (hBuySellWnd <= 0)
-                return "ERR:无法定位买卖对话框";
-
-            Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hQuoteNowPriceStatic, "-"))
-                return "ERR:无法重置输入编辑框";
-
-            Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hBuyCodeEdit, code) || !WaitItemIsNotEqual(hQuoteNowPriceStatic, "-"))
-                return "ERR:无法正确设置代码";
-
-            if (!WaitItemIsNotEmpty(hBuyNameStatic))
-                return "ERR:无法获取股票名称";
-            string s = Utility.getItemText(hBuyNameStatic).ToLower();
-            if (!allowBuyST && (s.Contains("*") || s.Contains("s")))
-                return "ERR:禁止买进*/s/st个股";
-
-            double price = GetNearlyQuote(level);
-            Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hBuyPriceEdit, price.ToString("F2")))
-                return "ERR:无法正确设置价格";
-
-            long num = (long)Math.Round(money / price);
-            num = num / 100 * 100;
-            Utility.SendMessageTimeout(hBuyAmountEdit, Utility.WM_SETTEXT, 0, num.ToString(), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hBuyAmountEdit, num.ToString()))
-                return "ERR:无法正确设置数量";
-
-            if (code[0] == '0' || code[0] == '3' || code.IndexOf("159") == 0) //sz
+            lock (locker)
             {
-                if (!WaitItemContains(hBuyMarketCB, "深圳"))
-                    return "ERR:无法正确选择市场";
-            }
-            else
-            {
-                if (!WaitItemContains(hBuyMarketCB, "上海"))
-                    return "ERR:无法正确选择市场";
-            }
+                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
+                hBuyWnd = WaitForDialog(hFrame, new string[] { "买入股票" }, ref currentCaption);
+                if (hBuyWnd <= 0)
+                    return "ERR:无法定位买入对话框";
 
-            if (!WaitWindowEnable(hBuyBtn))
-                return "ERR:无法点击按钮";
-            Utility.SetActiveWindow(hBuySellWnd);
-            Utility.SendMessage(hBuyBtn, Utility.WM_CLICK, 0, 0);
-            WaitWindowEnable(hBuyBtn);
-            return "";
+                //Utility.SetActiveWindow(hBuySellWnd);
+
+                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
+                //Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                //Utility.SetFocus(hBuyCodeEdit);
+
+                Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBQuoteNowPriceStatic, "-"))
+                    return "ERR:无法重置输入编辑框";
+
+                Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBuyCodeEdit, code) || !WaitItemIsNotEqual(hBQuoteNowPriceStatic, "-"))
+                    return "ERR:无法正确设置代码";
+
+                if (!WaitItemIsNotEmpty(hBuyNameStatic))
+                    return "ERR:无法获取股票名称";
+                string s = Utility.getItemText(hBuyNameStatic).ToLower();
+                if (!allowBuyST && (s.Contains("*") || s.Contains("s")))
+                    return "ERR:禁止买进*/s/st个股";
+
+                double price = GetNearlyBQuote(level);
+                Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBuyPriceEdit, price.ToString("F2")))
+                    return "ERR:无法正确设置价格";
+
+                long num = (long)Math.Round(money / price);
+                num = num / 100 * 100;
+                Utility.SendMessageTimeout(hBuyAmountEdit, Utility.WM_SETTEXT, 0, num.ToString(), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBuyAmountEdit, num.ToString()))
+                    return "ERR:无法正确设置数量";
+
+                if (code[0] == '0' || code[0] == '3' || code.IndexOf("159") == 0) //sz
+                {
+                    if (!WaitItemContains(hToolbarMarket, "深圳"))
+                        return "ERR:无法正确选择市场";
+                }
+                else
+                {
+                    if (!WaitItemContains(hToolbarMarket, "上海"))
+                        return "ERR:无法正确选择市场";
+                }
+
+                if (!WaitWindowEnable(hBuyBtn))
+                    return "ERR:无法点击按钮";
+                Utility.SetActiveWindow(hBuyWnd);
+                Utility.SendMessage(hBuyBtn, Utility.WM_CLICK, 0, 0);
+
+                WaitWindowEnable(hBuyBtn);
+                Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                return "";
+            }
         }
 
         public string Buy_Level(string code, long num, string level)
@@ -610,52 +791,62 @@ namespace THSTrader
             string currentCaption = "";
             int msgResult = 0;
 
-            Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F6, 0);
-            hBuySellWnd = WaitForDialog(hFrame, new string[] { "买入股票[F1]", "卖出股票[F2]" }, ref currentCaption);
-            if (hBuySellWnd <= 0)
-                return "ERR:无法定位买卖对话框";
-
-            Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hQuoteNowPriceStatic, "-"))
-                return "ERR:无法重置输入编辑框";
-
-            Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hBuyCodeEdit, code) || !WaitItemIsNotEqual(hQuoteNowPriceStatic, "-"))
-                return "ERR:无法正确设置代码";
-
-            if (!WaitItemIsNotEmpty(hBuyNameStatic))
-                return "ERR:无法获取股票名称";
-            string s = Utility.getItemText(hBuyNameStatic).ToLower();
-            if (!allowBuyST && (s.Contains("*") || s.Contains("s")))
-                return "ERR:禁止买进*/s/st个股";
-
-            double price = GetNearlyQuote(level);
-            Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hBuyPriceEdit, price.ToString("F2")))
-                return "ERR:无法正确设置价格";
-
-            Utility.SendMessageTimeout(hBuyAmountEdit, Utility.WM_SETTEXT, 0, num.ToString(), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hBuyAmountEdit, num.ToString()))
-                return "ERR:无法正确设置数量";
-
-            if (code[0] == '0' || code[0] == '3' || code.IndexOf("159") == 0) //sz
+            lock (locker)
             {
-                if (!WaitItemContains(hBuyMarketCB, "深圳"))
-                    return "ERR:无法正确选择市场";
-            }
-            else
-            {
-                if (!WaitItemContains(hBuyMarketCB, "上海"))
-                    return "ERR:无法正确选择市场";
-            }
+                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
+                hBuyWnd = WaitForDialog(hFrame, new string[] { "买入股票" }, ref currentCaption);
+                if (hBuyWnd <= 0)
+                    return "ERR:无法定位买入对话框";
 
-            if (!WaitWindowEnable(hBuyBtn))
-                return "ERR:无法点击按钮";
-            Utility.SetActiveWindow(hBuySellWnd);
-            Utility.SendMessage(hBuyBtn, Utility.WM_CLICK, 0, 0);
-            WaitWindowEnable(hBuyBtn);
-            return "";
+                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
+                //Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                //Utility.SetFocus(hBuyCodeEdit);
+
+                Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBQuoteNowPriceStatic, "-"))
+                    return "ERR:无法重置输入编辑框";
+
+                Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBuyCodeEdit, code) || !WaitItemIsNotEqual(hBQuoteNowPriceStatic, "-"))
+                    return "ERR:无法正确设置代码";
+
+                if (!WaitItemIsNotEmpty(hBuyNameStatic))
+                    return "ERR:无法获取股票名称";
+                string s = Utility.getItemText(hBuyNameStatic).ToLower();
+                if (!allowBuyST && (s.Contains("*") || s.Contains("s")))
+                    return "ERR:禁止买进*/s/st个股";
+
+                double price = GetNearlyBQuote(level);
+                Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBuyPriceEdit, price.ToString("F2")))
+                    return "ERR:无法正确设置价格";
+
+                num = num / 100 * 100;
+                Utility.SendMessageTimeout(hBuyAmountEdit, Utility.WM_SETTEXT, 0, num.ToString(), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBuyAmountEdit, num.ToString()))
+                    return "ERR:无法正确设置数量";
+
+                if (code[0] == '0' || code[0] == '3' || code.IndexOf("159") == 0) //sz
+                {
+                    if (!WaitItemContains(hToolbarMarket, "深圳"))
+                        return "ERR:无法正确选择市场";
+                }
+                else
+                {
+                    if (!WaitItemContains(hToolbarMarket, "上海"))
+                        return "ERR:无法正确选择市场";
+                }
+
+                if (!WaitWindowEnable(hBuyBtn))
+                    return "ERR:无法点击按钮";
+                Utility.SetActiveWindow(hBuyWnd);
+                Utility.SendMessage(hBuyBtn, Utility.WM_CLICK, 0, 0);
+
+                WaitWindowEnable(hBuyBtn);
+                Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                return "";
+            }
         }
 
         public string Buy(string code, long num, double price)
@@ -663,51 +854,248 @@ namespace THSTrader
             string currentCaption = "";
             int msgResult = 0;
 
-            Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F6, 0);
-            hBuySellWnd = WaitForDialog(hFrame, new string[] { "买入股票[F1]", "卖出股票[F2]" }, ref currentCaption);
-            if (hBuySellWnd <= 0)
-                return "ERR:无法定位买卖对话框";
-
-            Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hQuoteNowPriceStatic, "-"))
-                return "ERR:无法重置输入编辑框";
-
-            Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hBuyCodeEdit, code) || !WaitItemIsNotEqual(hQuoteNowPriceStatic, "-"))
-                return "ERR:无法正确设置代码";
-            if (!WaitItemIsEqual(hBuyPriceEdit, price.ToString("F2")))
-                return "ERR:无法正确设置价格";
-
-
-            if (!WaitItemIsNotEmpty(hBuyNameStatic))
-                return "ERR:无法获取股票名称";
-            string s = Utility.getItemText(hBuyNameStatic).ToLower();
-            if (!allowBuyST && (s.Contains("*") || s.Contains("s")))
-                return "ERR:禁止买进*/s/st个股";
-
-            Utility.SendMessageTimeout(hBuyAmountEdit, Utility.WM_SETTEXT, 0, num.ToString(), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-            if (!WaitItemIsEqual(hBuyAmountEdit, num.ToString()))
-                return "ERR:无法正确设置数量";
-
-            if (code[0] == '0' || code[0] == '3' || code.IndexOf("159") == 0) //sz
+            lock (locker)
             {
-                if (!WaitItemContains(hBuyMarketCB, "深圳"))
-                    return "ERR:无法正确选择市场";
-            }
-            else
-            {
-                if (!WaitItemContains(hBuyMarketCB, "上海"))
-                    return "ERR:无法正确选择市场";
-            }
+                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
+                hBuyWnd = WaitForDialog(hFrame, new string[] { "买入股票" }, ref currentCaption);
+                if (hBuyWnd <= 0)
+                    return "ERR:无法定位买入对话框";
 
-            if (!WaitWindowEnable(hBuyBtn))
-                return "ERR:无法点击按钮";
-            Utility.SetActiveWindow(hBuySellWnd);
-            Utility.SendMessage(hBuyBtn, Utility.WM_CLICK, 0, 0);
-            WaitWindowEnable(hBuyBtn);
-            return "";
+                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
+                //Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                //Utility.SetFocus(hBuyCodeEdit);
+
+                Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBQuoteNowPriceStatic, "-"))
+                    return "ERR:无法重置输入编辑框";
+
+
+                Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBuyCodeEdit, code) || !WaitItemIsNotEqual(hBQuoteNowPriceStatic, "-"))
+                    return "ERR:无法正确设置代码";
+                if (!WaitItemIsEqual(hBuyPriceEdit, price.ToString("F2")))
+                    return "ERR:无法正确设置价格";
+
+
+                if (!WaitItemIsNotEmpty(hBuyNameStatic))
+                    return "ERR:无法获取股票名称";
+                string s = Utility.getItemText(hBuyNameStatic).ToLower();
+                if (!allowBuyST && (s.Contains("*") || s.Contains("s")))
+                    return "ERR:禁止买进*/s/st个股";
+
+                num = num / 100 * 100;
+                Utility.SendMessageTimeout(hBuyAmountEdit, Utility.WM_SETTEXT, 0, num.ToString(), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hBuyAmountEdit, num.ToString()))
+                    return "ERR:无法正确设置数量";
+
+                if (code[0] == '0' || code[0] == '3' || code.IndexOf("159") == 0) //sz
+                {
+                    if (!WaitItemContains(hToolbarMarket, "深圳"))
+                        return "ERR:无法正确选择市场";
+                }
+                else
+                {
+                    if (!WaitItemContains(hToolbarMarket, "上海"))
+                        return "ERR:无法正确选择市场";
+                }
+
+                if (!WaitWindowEnable(hBuyBtn))
+                    return "ERR:无法点击按钮";
+                Utility.SetActiveWindow(hBuyWnd);
+                Utility.SendMessage(hBuyBtn, Utility.WM_CLICK, 0, 0);
+
+                WaitWindowEnable(hBuyBtn);
+                Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                return "";
+            }
+        }
+
+        public string Sell_Percent(string code, double percent)
+        {
+            string level = "b5";
+            string currentCaption = "";
+            int msgResult = 0;
+
+            lock (locker)
+            {
+                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
+                hSellWnd = WaitForDialog(hFrame, new string[] { "卖出股票" }, ref currentCaption);
+                if (hSellWnd <= 0)
+                    return "ERR:无法定位买卖对话框";
+
+                //Utility.SetActiveWindow(hBuySellWnd);
+
+                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
+                //Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "11", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                //Utility.SetFocus(hSellCodeEdit);
+
+                Utility.SendMessageTimeout(hSellPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSQuoteNowPriceStatic, "-"))
+                    return "ERR:无法重置输入编辑框";
+
+
+                Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSellCodeEdit, code) || !WaitItemIsNotEqual(hSQuoteNowPriceStatic, "-"))
+                    return "ERR:无法正确设置代码";
+
+                double price = GetNearlySQuote(level);
+                Utility.SendMessageTimeout(hSellPriceEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSellPriceEdit, price.ToString("F2")))
+                    return "ERR:无法正确设置价格";
+
+                long maxAmount = 0;
+                maxAmount = long.Parse(Utility.getItemText(hSellMaxAmountStatic));
+                long num = (long)Math.Floor((double)maxAmount * percent);
+                Utility.SendMessageTimeout(hSellAmountEdit, Utility.WM_SETTEXT, 0, num.ToString(), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSellAmountEdit, num.ToString()))
+                    return "ERR:无法正确设置数量";
+
+                if (code[0] == '0' || code[0] == '3' || code.IndexOf("159") == 0) //sz
+                {
+                    if (!WaitItemContains(hToolbarMarket, "深圳"))
+                        return "ERR:无法正确选择市场";
+                }
+                else
+                {
+                    if (!WaitItemContains(hToolbarMarket, "上海"))
+                        return "ERR:无法正确选择市场";
+                }
+
+                if (!WaitWindowEnable(hSellBtn))
+                    return "ERR:无法点击按钮";
+                Utility.SetActiveWindow(hSellWnd);
+                Utility.SendMessage(hSellBtn, Utility.WM_CLICK, 0, 0);
+
+                WaitWindowEnable(hSellBtn);
+                Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                return "";
+            }
+        }
+
+        public string Sell_Level(string code, long num, string level)
+        {
+            level = level.ToLower();
+            string currentCaption = "";
+            int msgResult = 0;
+
+            lock (locker)
+            {
+                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
+                hSellWnd = WaitForDialog(hFrame, new string[] { "卖出股票" }, ref currentCaption);
+                if (hSellWnd <= 0)
+                    return "ERR:无法定位买卖对话框";
+
+                //Utility.SetActiveWindow(hBuySellWnd);
+
+                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
+                //Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "11", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                //Utility.SetFocus(hSellCodeEdit);
+
+                Utility.SendMessageTimeout(hSellPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSQuoteNowPriceStatic, "-"))
+                    return "ERR:无法重置输入编辑框";
+
+
+                Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSellCodeEdit, code) || !WaitItemIsNotEqual(hSQuoteNowPriceStatic, "-"))
+                    return "ERR:无法正确设置代码";
+
+                double price = GetNearlySQuote(level);
+                Utility.SendMessageTimeout(hSellPriceEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSellPriceEdit, price.ToString("F2")))
+                    return "ERR:无法正确设置价格";
+
+                long maxAmount = 0;
+                maxAmount = long.Parse(Utility.getItemText(hSellMaxAmountStatic));
+                num = Math.Min(num, maxAmount);
+                Utility.SendMessageTimeout(hSellAmountEdit, Utility.WM_SETTEXT, 0, num.ToString(), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSellAmountEdit, num.ToString()))
+                    return "ERR:无法正确设置数量";
+
+                if (code[0] == '0' || code[0] == '3' || code.IndexOf("159") == 0) //sz
+                {
+                    if (!WaitItemContains(hToolbarMarket, "深圳"))
+                        return "ERR:无法正确选择市场";
+                }
+                else
+                {
+                    if (!WaitItemContains(hToolbarMarket, "上海"))
+                        return "ERR:无法正确选择市场";
+                }
+
+                if (!WaitWindowEnable(hSellBtn))
+                    return "ERR:无法点击按钮";
+                Utility.SetActiveWindow(hSellWnd);
+                Utility.SendMessage(hSellBtn, Utility.WM_CLICK, 0, 0);
+
+                WaitWindowEnable(hSellBtn);
+                Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                return "";
+            }
+        }
+
+        public string Sell(string code, long num, double price)
+        {
+            string currentCaption = "";
+            int msgResult = 0;
+
+            lock (locker)
+            {
+                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
+                hSellWnd = WaitForDialog(hFrame, new string[] { "卖出股票" }, ref currentCaption);
+                if (hSellWnd <= 0)
+                    return "ERR:无法定位买卖对话框";
+
+                //Utility.SetActiveWindow(hBuySellWnd);
+
+                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
+                //Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "11", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                //Utility.SetFocus(hSellCodeEdit);
+
+                Utility.SendMessageTimeout(hSellPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSQuoteNowPriceStatic, "-"))
+                    return "ERR:无法重置输入编辑框";
+
+
+                Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                Utility.SendMessageTimeout(hSellPriceEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSellCodeEdit, code) || !WaitItemIsNotEqual(hSQuoteNowPriceStatic, "-"))
+                    return "ERR:无法正确设置代码";
+                if (!WaitItemIsEqual(hSellPriceEdit, price.ToString("F2")))
+                    return "ERR:无法正确设置价格";
+
+                long maxAmount = 0;
+                maxAmount = long.Parse(Utility.getItemText(hSellMaxAmountStatic));
+                num = Math.Min(num, maxAmount);
+                Utility.SendMessageTimeout(hSellAmountEdit, Utility.WM_SETTEXT, 0, num.ToString(), SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                if (!WaitItemIsEqual(hSellAmountEdit, num.ToString()))
+                    return "ERR:无法正确设置数量";
+
+                if (code[0] == '0' || code[0] == '3' || code.IndexOf("159") == 0) //sz
+                {
+                    if (!WaitItemContains(hToolbarMarket, "深圳"))
+                        return "ERR:无法正确选择市场";
+                }
+                else
+                {
+                    if (!WaitItemContains(hToolbarMarket, "上海"))
+                        return "ERR:无法正确选择市场";
+                }
+
+                if (!WaitWindowEnable(hSellBtn))
+                    return "ERR:无法点击按钮";
+                Utility.SetActiveWindow(hSellWnd);
+                Utility.SendMessage(hSellBtn, Utility.WM_CLICK, 0, 0);
+
+                WaitWindowEnable(hSellBtn);
+                Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                return "";
+            }
         }
 
         //#region Helper
@@ -1196,7 +1584,7 @@ namespace THSTrader
 
                     foreach (string caption in captionArr)
                     {
-                        if (strCaption.Contains(caption))
+                        if (strCaption == caption)
                         {
                             currentCaption = caption;
                             return hDialog;

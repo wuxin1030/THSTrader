@@ -29,15 +29,25 @@ namespace THSTrader
                 //client.Buy("511880", 100, 1);
                 //Thread.Sleep(2000);
                 uint t1 = Utility.GetTickCount();
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 4; i++)
                 {
-                    string xx = client.Buy("601398", 300, 4.01);
+                    string xx = "";
+                    xx = client.Buy_Money("000725", 1000);
                     if (xx != "")
                         ;
-                    xx = client.Buy_Level("000002", 100, "b5");
+                    xx = client.Buy_Level("600401", 100, "b5");
                     if (xx != "")
                         ;
-                    xx = client.Buy_Money("601328", 2000);
+                    xx = client.Sell("601398", 1, 4.5);
+                    if (xx != "")
+                        ;
+                    xx = client.Buy("000725", 100, 2.78);
+                    if (xx != "")
+                        ;
+                    xx = client.Sell_Level("000002", 2, "b5");
+                    if (xx != "")
+                        ;
+                    xx = client.Sell_Percent("510300", 0.1);
                     if (xx != "")
                         ;
                 }
@@ -59,13 +69,13 @@ namespace THSTrader
     public class THSModule : NancyModule
     {
         static private int i = 0;
-        static THSClient client = new THSClient();
+        //static THSClient client = new THSClient();
         public THSModule()
         {
             Get["/"] = r =>
             {
-                client.hWnd++;
-                return Response.AsJson(new { result = true, message = client.hWnd });
+                //client.hWnd++;
+                return Response.AsJson(new { result = true, message = 111 });
             };
         }
     }
