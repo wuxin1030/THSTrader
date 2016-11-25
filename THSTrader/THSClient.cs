@@ -59,6 +59,7 @@ namespace THSTrader
 
     public class THSClient
     {
+        static private object locker = new object();
 
         const int WM_ID_COPY = 57634;
         const int WM_ID_BUY = 161;
