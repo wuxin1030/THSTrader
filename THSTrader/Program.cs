@@ -31,13 +31,13 @@ namespace THSTrader
                 uint t1 = Utility.GetTickCount();
                 for (int i = 0; i < 10; i++)
                 {
-                    string xx = client.Buy("601398", 100, 4.01);
+                    string xx = client.Buy("601398", 300, 4.01);
                     if (xx != "")
                         ;
-                    xx = client.Buy("000002", 300, 24.50);
+                    xx = client.Buy_Level("000002", 100, "b5");
                     if (xx != "")
                         ;
-                    xx = client.Buy("601328", 200, 5.27);
+                    xx = client.Buy_Money("601328", 2000);
                     if (xx != "")
                         ;
                 }

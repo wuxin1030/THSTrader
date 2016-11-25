@@ -17,7 +17,7 @@ namespace THSTrader
     public class Utility
     {
         #region const
-        public const int timeout = 20000;
+        public const int timeout = 60000;
 
         //Windows 使用的256个虚拟键码
         public const int VK_LBUTTON = 0x1;
