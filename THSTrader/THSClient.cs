@@ -144,9 +144,12 @@ namespace THSTrader
         public int hWithdrawWnd = 0;
         public int hWithdrawCodeEdit = 0;
         public int hWithdrawQueryBtn = 0;
-        public int hWithdrawDealSelectedBtn = 0;
-        public int hWithdrawDealAllBtn = 0;
+        public int hWithdrawSelectedBtn = 0;
+        public int hWithdrawAllBtn = 0;
+        public int hWithdrawBuyBtn = 0;
+        public int hWithdrawSellBtn = 0;
         public int hWithdrawGrid = 0;
+        public int hWithdrawSelectAllBtn = 0;
 
         System.Configuration.Configuration config;
 
@@ -168,36 +171,14 @@ namespace THSTrader
                 string text = Utility.getItemText(hToolbarAccount);
                 if (text == strSHAccount || text == strSZAccount)
                 {
-                    int outResult = 0;
-                    string currentCaption = "";
+                    //int outResult = 0;
+                    //string currentCaption = "";
 
                     hFrame = Utility.GetDlgItem(hWnd, 0xE900);
                     hAfxWnd = Utility.GetDlgItem(hFrame, 0xE900);
                     hLeft = Utility.GetDlgItem(hAfxWnd, 0x81);
                     hLeftWnd = Utility.GetDlgItem(hLeft, 0xC8);
                     hLeftTree = Utility.GetDlgItem(hLeftWnd, 0x81);
-
-                    Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F3, 0);
-                    hWithdrawWnd = WaitForDialog(hFrame, new string[] { "在委托记录上用鼠标双击或回车即可撤单" }, ref currentCaption);
-                    if (hWithdrawWnd <= 0)
-                        throw new Exception("无法定位撤单对话框");
-
-                    hWithdrawCodeEdit = Utility.GetDlgItem(hWithdrawWnd, 0xD14);
-                    hWithdrawQueryBtn = Utility.GetDlgItem(hWithdrawWnd, 0xD15);
-                    hWithdrawDealSelectedBtn = Utility.GetDlgItem(hWithdrawWnd, 0x44B);
-                    hWithdrawDealAllBtn = Utility.GetDlgItem(hWithdrawWnd, 0x7531);
-
-                    if (!Utility.getItemText(hWithdrawQueryBtn).Contains("查询代码")
-                        || !Utility.getItemText(hWithdrawDealSelectedBtn).Contains("撤单")
-                        || !Utility.getItemText(hWithdrawDealAllBtn).Contains("全撤"))
-                        throw new Exception("无法定位撤单按钮");
-
-                    hWithdrawGrid = Utility.GetDlgItem(
-                        Utility.GetDlgItem(
-                            Utility.GetDlgItem(hWithdrawWnd, 0x417)
-                            , 0xC8)
-                        , 0x417);//表格控件嵌套在两层HexinWnd之内
-
                     return;
                 }
             }
@@ -285,8 +266,6 @@ namespace THSTrader
 
         //    return true;
         //}
-
-
         public bool GetAccountStat(ref double available,
             ref double stockValue, ref double asset)
         {
@@ -325,6 +304,166 @@ namespace THSTrader
                 }
             }
         }
+
+        private bool WaitGridIsNotEmpty(int hGrid)
+        {
+            uint oldTick = Utility.GetTickCount();
+
+            while (Utility.GetTickCount() - oldTick < Utility.timeout)
+            {
+                try
+                {
+                    ClipboardHelper.Save();
+                    Clipboard.Clear();
+                    int outResule = 0;
+                    Utility.SendMessageTimeout(hGrid, (uint)Utility.WM_COMMAND, WM_ID_COPY, 0, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out outResule);
+                    string cbText = Clipboard.GetText(TextDataFormat.UnicodeText);
+                    ClipboardHelper.Restore();
+
+                    string[] strLines = cbText.Split(new string[] { "\r\n" },
+                        StringSplitOptions.RemoveEmptyEntries);
+
+                    if (strLines.Length >= 2)
+                        return true;
+                }
+                catch
+                {
+                }
+
+                Thread.Sleep(100);
+            }
+
+            return false;
+        }
+        private bool WaitGridCodeAreEqual(int hGrid, string code)
+        {
+            uint oldTick = Utility.GetTickCount();
+
+            while (Utility.GetTickCount() - oldTick < Utility.timeout)
+            {
+                try
+                {
+                    ClipboardHelper.Save();
+                    Clipboard.Clear();
+                    int outResule = 0;
+                    Utility.SendMessageTimeout(hGrid, (uint)Utility.WM_COMMAND, WM_ID_COPY, 0, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out outResule);
+                    string cbText = Clipboard.GetText(TextDataFormat.UnicodeText);
+                    ClipboardHelper.Restore();
+
+                    string[] strLines = cbText.Split(new string[] { "\r\n" },
+                        StringSplitOptions.RemoveEmptyEntries);
+
+                    string[] strColumnHeader = strLines[0].Split(new string[] { "\t" },
+                        StringSplitOptions.RemoveEmptyEntries);
+
+                    string[][] items = new string[strLines.Length - 1][];
+
+                    for (int i = 1; i < strLines.Length; i++)
+                    {
+                        items[i - 1] = strLines[i].Split(new string[] { "\t" },
+                            StringSplitOptions.RemoveEmptyEntries);
+                    }
+
+                    for (int i = 0; i < strColumnHeader.Length; i++)
+                    {
+                        if (strColumnHeader[i] == config.AppSettings.Settings["Cancel_Code"].Value.ToString())
+                        {
+                            for (int j = 0; j < items.Length; j++)
+                                if (items[j][i] != code)
+                                    return false;
+                        }
+                    }
+
+                    return true;
+                }
+                catch
+                {
+                }
+
+                Thread.Sleep(100);
+            }
+
+            return false;
+        }
+        public string Cancel(string code, string type)//all, code_all, code_buy, code_sell
+        {
+            string currentCaption = "";
+            int msgResult = 0;
+
+            lock (locker)
+            {
+                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F3, 0);
+                hWithdrawWnd = WaitForDialog(hFrame, new string[] { "在委托记录上用鼠标双击或回车即可撤单" }, ref currentCaption);
+                if (hWithdrawWnd <= 0)
+                    throw new Exception("无法定位撤单对话框");
+
+                hWithdrawCodeEdit = Utility.GetDlgItem(hWithdrawWnd, 0xD14);
+                hWithdrawQueryBtn = Utility.GetDlgItem(hWithdrawWnd, 0xD15);
+                hWithdrawSelectedBtn = Utility.GetDlgItem(hWithdrawWnd, 0x44B);
+                hWithdrawAllBtn = Utility.GetDlgItem(hWithdrawWnd, 0x7531);
+                hWithdrawBuyBtn = Utility.GetDlgItem(hWithdrawWnd, 0x7532);
+                hWithdrawSellBtn = Utility.GetDlgItem(hWithdrawWnd, 0x7533);
+                hWithdrawSelectAllBtn = Utility.GetDlgItem(hWithdrawWnd, 0x44A);
+
+                hWithdrawGrid = Utility.GetDlgItem(
+                    Utility.GetDlgItem(
+                        Utility.GetDlgItem(hWithdrawWnd, 0x417)
+                        , 0xC8)
+                    , 0x417);//表格控件嵌套在两层HexinWnd之内
+
+                type = type.ToLower();
+                if (type == "all")
+                {
+                    if (!WaitGridIsNotEmpty(hWithdrawGrid))
+                        return "ERR:无可撤订单";
+                    if (!WaitWindowEnable(hWithdrawAllBtn))
+                        return "ERR:无法点击按钮";
+                    Utility.SetActiveWindow(hWithdrawAllBtn);
+                    Utility.SendMessage(hWithdrawAllBtn, Utility.WM_CLICK, 0, 0);
+                    WaitWindowEnable(hWithdrawAllBtn);
+                }
+                else
+                {
+                    Utility.SendMessageTimeout(hWithdrawCodeEdit, Utility.WM_SETTEXT, 0, code, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                    if (!WaitItemIsEqual(hWithdrawCodeEdit, code))
+                        return "ERR:无法正确设置代码";
+                    if (!WaitWindowEnable(hWithdrawQueryBtn))
+                        return "ERR:无法点击按钮";
+                    Utility.SetActiveWindow(hWithdrawQueryBtn);
+                    Utility.SendMessage(hWithdrawQueryBtn, Utility.WM_CLICK, 0, 0);
+                    WaitWindowEnable(hWithdrawQueryBtn);
+                    if (!WaitGridCodeAreEqual(hWithdrawGrid, code) || !WaitItemIsEqual(hWithdrawSelectAllBtn, "全部清除"))
+                        return "ERR:无法执行查询代码和选中代码";
+
+                    switch (type)
+                    {
+                        case "code_all":
+                            if (!WaitWindowEnable(hWithdrawSelectedBtn))
+                                return "ERR:无法点击按钮";
+                            Utility.SetActiveWindow(hWithdrawSelectedBtn);
+                            Utility.SendMessage(hWithdrawSelectedBtn, Utility.WM_CLICK, 0, 0);
+                            //WaitWindowEnable(hWithdrawSelectedBtn);
+                            break;
+                        case "code_buy":
+                            if (!WaitWindowEnable(hWithdrawBuyBtn))
+                                return "ERR:无法点击按钮";
+                            Utility.SetActiveWindow(hWithdrawBuyBtn);
+                            Utility.SendMessage(hWithdrawBuyBtn, Utility.WM_CLICK, 0, 0);
+                            WaitWindowEnable(hWithdrawBuyBtn);
+                            break;
+                        case "code_sell":
+                            if (!WaitWindowEnable(hWithdrawSellBtn))
+                                return "ERR:无法点击按钮";
+                            Utility.SetActiveWindow(hWithdrawSellBtn);
+                            Utility.SendMessage(hWithdrawSellBtn, Utility.WM_CLICK, 0, 0);
+                            WaitWindowEnable(hWithdrawSellBtn);
+                            break;
+                    }
+                }
+                return "";
+            }
+        }
+
         private double GetNearlyBQuote(string level)
         {
             level = level.ToLower();

@@ -29,31 +29,31 @@ namespace THSTrader
 
                 var xxx1 = client.GetHoldingDetail();
                 var xxx2 = client.GetCommissionDetail();
-                //var xxx3 = client.GetOrderDetail();
 
+                string xxs = client.Cancel("", "all");
                 uint t1 = Utility.GetTickCount();
-                for (int i = 0; i < 1; i++)
-                {
-                    string xx = "";
-                    xx = client.Buy_Money("000725", 1000);
-                    if (xx != "")
-                        ;
-                    xx = client.Buy_Level("600401", 100, "b5");
-                    if (xx != "")
-                        ;
-                    xx = client.Sell("601398", 1, 4.56);
-                    if (xx != "")
-                        ;
-                    xx = client.Buy("000725", 100, 2.78);
-                    if (xx != "")
-                        ;
-                    xx = client.Sell_Level("000002", 2, "b5");
-                    if (xx != "")
-                        ;
-                    xx = client.Sell_Percent("159915", 0.1);
-                    if (xx != "")
-                        ;
-                }
+                //for (int i = 0; i < 1; i++)
+                //{
+                //    string xx = "";
+                //    xx = client.Buy_Money("000725", 1000);
+                //    if (xx != "")
+                //        ;
+                //    xx = client.Buy_Level("600401", 100, "b5");
+                //    if (xx != "")
+                //        ;
+                //    xx = client.Sell("601398", 1, 4.56);
+                //    if (xx != "")
+                //        ;
+                //    xx = client.Buy("000725", 100, 2.78);
+                //    if (xx != "")
+                //        ;
+                //    xx = client.Sell_Level("000002", 2, "b5");
+                //    if (xx != "")
+                //        ;
+                //    xx = client.Sell_Percent("159915", 0.1);
+                //    if (xx != "")
+                //        ;
+                //}
                 uint t2 = Utility.GetTickCount();
                 uint t3 = t2 - t1;
 
