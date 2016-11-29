@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Configuration;
+using System.Windows.Forms;
 
 namespace THSTrader
 {
@@ -23,7 +24,6 @@ namespace THSTrader
 
     public class StockCommission
     {
-        public string Date { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public string Direction { get; set; }
@@ -31,31 +31,30 @@ namespace THSTrader
         public long OrderVol { get; set; }
         public string Time { get; set; }
         public long DealVol { get; set; }
+        public long CancelVol { get; set; }
         public double DealPrice { get; set; }
         public string Contract { get; set; }
     }
 
-    public class StockOrder
-    {
-        public string Date { get; set; }
-        public string Contract { get; set; }
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public string Direction { get; set; }
-        public long DealVol { get; set; }
-        public double DealPrice { get; set; }
-        public double DealValue { get; set; }
-        public string DealNO { get; set; }
-
-    }
+    //public class StockOrder
+    //{
+    //    public string Contract { get; set; }
+    //    public string Code { get; set; }
+    //    public string Name { get; set; }
+    //    public string Direction { get; set; }
+    //    public long DealVol { get; set; }
+    //    public double DealPrice { get; set; }
+    //    public double DealValue { get; set; }
+    //    public string DealNO { get; set; }
+    //}
 
 
-    public class StockStatistics
-    {
-        public double Available { get; set; }
-        public double StockVol { get; set; }
-        public double Asset { get; set; }
-    }
+    //public class StockStatistics
+    //{
+    //    public double Available { get; set; }
+    //    public double StockVol { get; set; }
+    //    public double Asset { get; set; }
+    //}
 
     public class THSClient
     {
@@ -66,7 +65,7 @@ namespace THSTrader
         const int WM_ID_SELL = 162;
         const int WM_ID_CANCEL = 163;
         const int WM_ID_HOLD = 165;
-        const int WM_ID_DEAL = 167;
+        const int WM_ID_ORDER = 167;
         const int WM_ID_COMMIT = 168;
         const int WM_ID_PREORDER = 172;
 
@@ -90,11 +89,9 @@ namespace THSTrader
         public int hBuyCodeEdit = 0;
         public int hBuyPriceEdit = 0;
         public int hBuyAmountEdit = 0;
-        //public int hBuyStrategyCb = 0;
         public int hBuyBtn = 0;
         public int hBuyNameStatic = 0;
         public int hBuyMaxAmountStatic = 0;
-        //public int hBuyMarketCB = 0;
         public int hBQuoteWnd = 0;
         public int hBQuoteB1PriceStatic = 0;
         public int hBQuoteB2PriceStatic = 0;
@@ -115,11 +112,9 @@ namespace THSTrader
         public int hSellCodeEdit = 0;
         public int hSellPriceEdit = 0;
         public int hSellAmountEdit = 0;
-        //public int hSellStrategyCb = 0;
         public int hSellBtn = 0;
         public int hSellNameStatic = 0;
         public int hSellMaxAmountStatic = 0;
-        //public int hSellMarketCB = 0;
         public int hSQuoteWnd = 0;
         public int hSQuoteB1PriceStatic = 0;
         public int hSQuoteB2PriceStatic = 0;
@@ -135,25 +130,16 @@ namespace THSTrader
         public int hSQuoteMaxPriceStatic = 0;
         public int hSQuoteMinPriceStatic = 0;
 
+        public int hHoldWnd = 0;
+        public int hAvailable = 0;
+        public int hStockValue = 0;
+        public int hAsset = 0;
+        public int hHoldGrid = 0;
 
-        //public int hAvailableBalance = 0;
-
-        //public int hQuoteWnd = 0;
-        //public int hQuoteB1PriceStatic = 0;
-        //public int hQuoteB2PriceStatic = 0;
-        //public int hQuoteB3PriceStatic = 0;
-        //public int hQuoteB4PriceStatic = 0;
-        //public int hQuoteB5PriceStatic = 0;
-        //public int hQuoteS1PriceStatic = 0;
-        //public int hQuoteS2PriceStatic = 0;
-        //public int hQuoteS3PriceStatic = 0;
-        //public int hQuoteS4PriceStatic = 0;
-        //public int hQuoteS5PriceStatic = 0;
-        //public int hQuoteNowPriceStatic = 0;
-        //public int hQuoteMaxPriceStatic = 0;
-        //public int hQuoteMinPriceStatic = 0;
-
-        //public int hBuySellGird = 0;
+        public int hOrderWnd = 0;
+        public int hOrderGrid = 0;
+        public int hCommitWnd = 0;
+        public int hCommitGrid = 0;
 
         public int hWithdrawWnd = 0;
         public int hWithdrawCodeEdit = 0;
@@ -161,10 +147,6 @@ namespace THSTrader
         public int hWithdrawDealSelectedBtn = 0;
         public int hWithdrawDealAllBtn = 0;
         public int hWithdrawGrid = 0;
-
-
-
-        private int pId = 0;
 
         System.Configuration.Configuration config;
 
@@ -175,8 +157,6 @@ namespace THSTrader
             strSHAccount = config.AppSettings.Settings["SHAccount"].Value.ToString();
             strSZAccount = config.AppSettings.Settings["SZAccount"].Value.ToString();
 
-            //Init
-
             StringBuilder stringBuilder = new StringBuilder(256);
             while ((hWnd = Utility.FindWindowEx(0, hWnd, null, strMainWindowTitle)) > 0)
             {
@@ -185,12 +165,10 @@ namespace THSTrader
                 hToolbarMarket = Utility.GetDlgItem(Utility.FindWindowEx(hToolbar, 0, "#32770", null), 0x3EB);
                 hToolbarAccount = Utility.GetDlgItem(Utility.FindWindowEx(hToolbar, 0, "#32770", null), 0x3EC);
 
-                //hList = Utility.FindWindowRe(hToolbar, 0, "ComboBox", null, 10);
-                //foreach (int h in hList)
-                //{
                 string text = Utility.getItemText(hToolbarAccount);
                 if (text == strSHAccount || text == strSZAccount)
                 {
+                    int outResult = 0;
                     string currentCaption = "";
 
                     hFrame = Utility.GetDlgItem(hWnd, 0xE900);
@@ -198,92 +176,6 @@ namespace THSTrader
                     hLeft = Utility.GetDlgItem(hAfxWnd, 0x81);
                     hLeftWnd = Utility.GetDlgItem(hLeft, 0xC8);
                     hLeftTree = Utility.GetDlgItem(hLeftWnd, 0x81);
-
-                    Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
-                    hBuyWnd = WaitForDialog(hFrame, new string[] { "买入股票" }, ref currentCaption);
-                    if (hBuyWnd <= 0)
-                        throw new Exception("无法定位买入对话框");
-
-                    //hBuySellWnd = hDialogWnd;// Utility.GetDlgItem(hFrame, 0xE901);
-
-                    hBuyCodeEdit = Utility.GetDlgItem(hBuyWnd, 0x408);
-                    hBuyPriceEdit = Utility.GetDlgItem(hBuyWnd, 0x409);
-                    hBuyAmountEdit = Utility.GetDlgItem(hBuyWnd, 0x40A);
-                    //hBuyStrategyCb = Utility.GetDlgItem(hBuyWnd, 0x605);
-                    hBuyBtn = Utility.GetDlgItem(hBuyWnd, 0x3EE);
-                    hBuyNameStatic = Utility.GetDlgItem(hBuyWnd, 0x40C);
-                    hBuyMaxAmountStatic = Utility.GetDlgItem(hBuyWnd, 0x3FA);
-                    //hBuyMarketCB = Utility.GetDlgItem(hBuyWnd, 0xD7B);
-                    hBQuoteWnd = FindDialog(hBuyWnd, new string[] { "涨停", "跌停" }, ref currentCaption);
-                    hBQuoteB1PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3FA);
-                    hBQuoteB2PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x401);
-                    hBQuoteB3PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x402);
-                    hBQuoteB4PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x40B);
-                    hBQuoteB5PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x40C);
-                    hBQuoteS1PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3FD);
-                    hBQuoteS2PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3Fe);
-                    hBQuoteS3PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3FF);
-                    hBQuoteS4PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x409);
-                    hBQuoteS5PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x408);
-                    hBQuoteNowPriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x400);
-                    hBQuoteMaxPriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x404);
-                    hBQuoteMinPriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x405);
-                    //if (!Utility.getItemText(hBuyBtn).Contains("买入"))
-                    //    throw new Exception("无法定位买入按钮");
-
-
-                    Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
-                    hSellWnd = WaitForDialog(hFrame, new string[] { "卖出股票" }, ref currentCaption);
-                    if (hSellWnd <= 0)
-                        throw new Exception("无法定位卖出对话框");
-
-                    hSellCodeEdit = Utility.GetDlgItem(hSellWnd, 0x408);
-                    hSellPriceEdit = Utility.GetDlgItem(hSellWnd, 0x409);
-                    hSellAmountEdit = Utility.GetDlgItem(hSellWnd, 0x40A);
-                    //hSellStrategyCb = Utility.GetDlgItem(hSellWnd, 0x606);
-                    hSellBtn = Utility.GetDlgItem(hSellWnd, 0x3EE);
-                    hSellNameStatic = Utility.GetDlgItem(hSellWnd, 0x40C);
-                    hSellMaxAmountStatic = Utility.GetDlgItem(hSellWnd, 0x40E);
-                    //hSellMarketCB = Utility.GetDlgItem(hSellWnd, 0xD7D);
-                    hSQuoteWnd = FindDialog(hSellWnd, new string[] { "涨停", "跌停" }, ref currentCaption);
-                    hSQuoteB1PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3FA);
-                    hSQuoteB2PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x401);
-                    hSQuoteB3PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x402);
-                    hSQuoteB4PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x40B);
-                    hSQuoteB5PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x40C);
-                    hSQuoteS1PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3FD);
-                    hSQuoteS2PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3Fe);
-                    hSQuoteS3PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3FF);
-                    hSQuoteS4PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x409);
-                    hSQuoteS5PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x408);
-                    hSQuoteNowPriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x400);
-                    hSQuoteMaxPriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x404);
-                    hSQuoteMinPriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x405);
-                    //if (!Utility.getItemText(hSellBtn).Contains("卖出"))
-                    //    throw new Exception("无法定位卖出按钮");
-
-                    //hAvailableBalance = Utility.GetDlgItem(hBuySellWnd, 0x40E);//可用余额
-
-                    //hQuoteWnd = FindDialog(hBuySellWnd, new string[] { "涨停", "跌停" }, ref currentCaption);
-                    //hQuoteB1PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3FA);
-                    //hQuoteB2PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x401);
-                    //hQuoteB3PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x402);
-                    //hQuoteB4PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x40B);
-                    //hQuoteB5PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x40C);
-                    //hQuoteS1PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3FD);
-                    //hQuoteS2PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3Fe);
-                    //hQuoteS3PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x3FF);
-                    //hQuoteS4PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x409);
-                    //hQuoteS5PriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x408);
-                    //hQuoteNowPriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x400);
-                    //hQuoteMaxPriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x404);
-                    //hQuoteMinPriceStatic = Utility.GetDlgItem(hQuoteWnd, 0x405);
-
-                    //hBuySellGird = Utility.GetDlgItem(
-                    //    Utility.GetDlgItem(
-                    //        Utility.GetDlgItem(hBuySellWnd, 0x417)
-                    //        , 0xC8)
-                    //    , 0x417);//表格控件嵌套在两层HexinWnd之内
 
                     Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F3, 0);
                     hWithdrawWnd = WaitForDialog(hFrame, new string[] { "在委托记录上用鼠标双击或回车即可撤单" }, ref currentCaption);
@@ -308,37 +200,64 @@ namespace THSTrader
 
                     return;
                 }
-                //}
             }
 
             throw new Exception("未找到对应的THS窗口。");
         }
-        //public List<StockHolding> GetStockDetail()
+
+        public List<StockHolding> GetHoldingDetail()
+        {
+            string[] strColumnTitle = new string[1];
+            string[][] strItems = new string[1][];
+
+            uint oldTick = Utility.GetTickCount();
+
+            while (Utility.GetTickCount() - oldTick < Utility.timeout)
+            {
+                if (GetStockDetail(ref strColumnTitle, ref strItems))
+                {
+                    return DecodeStockHolding(strColumnTitle, strItems);
+                }
+
+                Thread.Sleep(100);
+            }
+
+            return null;
+        }
+        public List<StockCommission> GetCommissionDetail()
+        {
+            string[] strColumnTitle = new string[1];
+            string[][] strItems = new string[1][];
+
+            uint oldTick = Utility.GetTickCount();
+
+            while (Utility.GetTickCount() - oldTick < Utility.timeout)
+            {
+                if (GetCommissionDetail(ref strColumnTitle, ref strItems))
+                {
+                    return DecodeCommission(strColumnTitle, strItems);
+                }
+
+                Thread.Sleep(100);
+            }
+
+            return null;
+        }
+        //public List<StockOrder> GetOrderDetail()
         //{
         //    string[] strColumnTitle = new string[1];
         //    string[][] strItems = new string[1][];
-        //    ///bool bUpdated = false;
 
-        //    if (GetStockDetail(ref strColumnTitle,
-        //        ref strItems))///, ref bUpdated))
+        //    uint oldTick = Utility.GetTickCount();
+
+        //    while (Utility.GetTickCount() - oldTick < Utility.timeout)
         //    {
-        //        ///if(bUpdated)
-        //        return DecodeStockHolding(strColumnTitle, strItems);
+        //        if (GetOrderDetail(ref strColumnTitle, ref strItems))
+        //        {
+        //            return DecodeOrder(strColumnTitle, strItems);
+        //        }
 
-        //        ///return null;
-        //    }
-
-        //    return null;
-        //}
-        //public List<StockCommission> GetCommissionDetail()
-        //{
-        //    string[] strColumnTitle = new string[1];
-        //    string[][] strItems = new string[1][];
-
-        //    if (GetCommissionDetail(ref strColumnTitle,
-        //        ref strItems))
-        //    {
-        //        return DecodeCommission(strColumnTitle, strItems);
+        //        Thread.Sleep(100);
         //    }
 
         //    return null;
@@ -367,157 +286,45 @@ namespace THSTrader
         //    return true;
         //}
 
-        //public bool Refresh()
-        //{
-        //    int hWnd = GetWindowsHandle();
 
-        //    if (hWnd <= 0)
-        //        return false;
+        public bool GetAccountStat(ref double available,
+            ref double stockValue, ref double asset)
+        {
+            string currentCaption = "";
+            int outResult = 0;
 
-        //    //F5刷新任何当前对话框
-        //    Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F5, 0);
+            lock (locker)
+            {
+                Utility.SendMessageTimeout(hWnd, Utility.WM_COMMAND, WM_ID_HOLD, 0, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out outResult);
+                hHoldWnd = WaitForDialog(hFrame, new string[] { "可用金额" }, ref currentCaption);
+                if (hHoldWnd <= 0)
+                    throw new Exception("无法定位持仓对话框");
 
-        //    return true;
-        //}
+                hAvailable = Utility.GetDlgItem(hHoldWnd, 0x3F8);
+                hStockValue = Utility.GetDlgItem(hHoldWnd, 0x3F6);
+                hAsset = Utility.GetDlgItem(hHoldWnd, 0x3F7);
+                //hHoldGrid = Utility.GetDlgItem(
+                //    Utility.GetDlgItem(
+                //        Utility.GetDlgItem(hHoldWnd, 0x417)
+                //        , 0xC8)
+                //    , 0x417);//表格控件嵌套在两层HexinWnd之内
 
-        //public bool HeartBeat()
-        //{
-        //    string a = "", b = "", c = "";
-        //    return GetStockStatistics(ref a, ref b, ref c);
-        //}
-        //public bool GetStockStatistics(ref string strAvail,
-        //    ref string strStockVol, ref string strAsset)
-        //{
-        //    int hWnd = GetWindowsHandle();
-        //    if (hWnd <= 0)
-        //        return false;
+                if (!WaitItemIsNotEmpty(hAvailable))
+                    throw new Exception("无法读取可用金额数据");
 
-        //    Utility.SendMessage(hWnd, Utility.WM_COMMAND, WM_ID_HOLD, 0);
-
-        //    string strCaption;
-        //    StringBuilder stringBuilder = new StringBuilder(256);
-
-        //    string currentCaption = "";
-        //    int hClientWnd = FindDialog(hWnd, new string[] { "可用金额" }, ref currentCaption);
-        //    if (hClientWnd <= 0)
-        //        return false;
-        //    Thread.Sleep(500); //找到对话框之后充分等待数据传输
-
-        //    // 可用金额
-        //    int hChildWnd = Utility.FindWindowEx(hClientWnd, 0, "Static", null);
-
-        //    Utility.GetWindowText(hChildWnd, stringBuilder, 256);
-        //    strCaption = stringBuilder.ToString();
-
-        //    if (strCaption != "可用金额")
-        //        return false;
-
-        //    // 股票市值
-        //    hChildWnd = Utility.FindWindowEx(hClientWnd, hChildWnd, "Static", null);
-
-        //    Utility.GetWindowText(hChildWnd, stringBuilder, 256);
-        //    strCaption = stringBuilder.ToString();
-
-        //    if (strCaption != "股票市值")
-        //        return false;
-
-        //    // 总 资 产
-        //    hChildWnd = Utility.FindWindowEx(hClientWnd, hChildWnd, "Static", null);
-
-        //    Utility.GetWindowText(hChildWnd, stringBuilder, 256);
-        //    strCaption = stringBuilder.ToString();
-
-        //    if (strCaption != "总 资 产")
-        //        return false;
-
-        //    hChildWnd = Utility.FindWindowEx(hClientWnd, hChildWnd, "Static", null);
-        //    Utility.GetWindowText(hChildWnd, stringBuilder, 256);
-        //    strAvail = stringBuilder.ToString();
-
-        //    hChildWnd = Utility.FindWindowEx(hClientWnd, hChildWnd, "Static", null);
-        //    Utility.GetWindowText(hChildWnd, stringBuilder, 256);
-        //    strStockVol = stringBuilder.ToString();
-
-        //    hChildWnd = Utility.FindWindowEx(hClientWnd, hChildWnd, "Static", null);
-        //    Utility.GetWindowText(hChildWnd, stringBuilder, 256);
-        //    strAsset = stringBuilder.ToString();
-
-        //    return true;
-        //}
-
-        //public string SellStock(string strCode, long num, double price)
-        //{
-        //    if (num <= 0)
-        //        return "出售数量小于等于0,忽略.";
-
-        //    string errCode;
-        //    int hWnd = GetWindowsHandle();
-
-        //    if (hWnd <= 0)
-        //        return "下单软件已经关闭";
-
-        //    Utility.SendMessage(hWnd, Utility.WM_COMMAND, WM_ID_SELL, 0);
-
-        //    int hAfxMDIWnd = Utility.FindWindowEx(hWnd, 0, "AfxMDIFrame42s", null);
-
-        //    if (hAfxMDIWnd <= 0)
-        //        return "内部错误-2001";
-
-        //    string currentCaption = "";
-        //    int hDialogWnd = WaitForDialog(hAfxMDIWnd, new string[] { "卖出股票" }, ref currentCaption);
-        //    if (hDialogWnd <= 0)
-        //        return "内部错误-2002";
-
-        //    int hEdit = 0;
-        //    hEdit = Utility.FindWindowEx(hDialogWnd, hEdit, "Edit", null);
-        //    Utility.SendMessage(hEdit, Utility.WM_SETTEXT, 0, strCode);
-
-        //    Thread.Sleep(500);
-
-        //    hEdit = Utility.FindWindowEx(hDialogWnd, hEdit, "Edit", null);
-        //    WaitEditIsNotEmpty(hEdit);
-
-        //    //获取买5到卖5
-        //    //0买一价，正数指定价，-1买五价
-        //    if (price > 0)
-        //        Utility.SendMessage(hEdit, Utility.WM_SETTEXT, 0, price.ToString("F2"));
-
-        //    hEdit = Utility.FindWindowEx(hDialogWnd, hEdit, "Edit", null);
-        //    Utility.SendMessage(hEdit, Utility.WM_SETTEXT, 0, num.ToString());
-
-        //    int hButton = FindButton(hDialogWnd, new string[] { "卖出[S]" });
-        //    if (hButton <= 0)
-        //        return "内部错误-2003";
-
-        //    Utility.PostMessage(hButton, Utility.WM_CLICK, 0, 0);
-
-        //    int hDialog = WaitForDialog(0, new string[] { "委托确认" }, ref currentCaption);
-        //    if (hDialog <= 0)
-        //        return "内部错误-2004";
-
-        //    hButton = FindButton(hDialog, new string[] { "是(&Y)" });
-        //    if (hButton <= 0)
-        //        return "内部错误-2005";
-
-        //    Utility.PostMessage(hButton, Utility.WM_CLICK, 0, 0);
-
-        //    hDialog = WaitForDialog(0, new string[] {
-        //        "证券可用数量不足", "委托已成功提交", "当前时间不允许委托", "当前时间不允许停牌委托" }, ref currentCaption); ;
-
-        //    if (hDialog <= 0)
-        //        return "内部错误-2006";
-
-        //    errCode = currentCaption;
-
-        //    hButton = FindButton(hDialog, new string[] { "确定", "终止" });
-        //    if (hButton <= 0)
-        //        return "内部错误-2007";
-
-        //    Utility.PostMessage(hButton, Utility.WM_CLICK, 0, 0);
-
-        //    return errCode;
-        //}
-
+                try
+                {
+                    available = double.Parse(Utility.getItemText(hAvailable));
+                    stockValue = double.Parse(Utility.getItemText(hStockValue));
+                    asset = double.Parse(Utility.getItemText(hAsset));
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
         private double GetNearlyBQuote(string level)
         {
             level = level.ToLower();
@@ -719,25 +526,46 @@ namespace THSTrader
             }
         }
 
+        private void LoadBuyControl()
+        {
+            string currentCaption = "";
+
+            Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
+            hBuyWnd = WaitForDialog(hFrame, new string[] { "买入股票" }, ref currentCaption);
+            if (hBuyWnd <= 0)
+                throw new Exception("无法定位买入对话框");
+
+            hBuyCodeEdit = Utility.GetDlgItem(hBuyWnd, 0x408);
+            hBuyPriceEdit = Utility.GetDlgItem(hBuyWnd, 0x409);
+            hBuyAmountEdit = Utility.GetDlgItem(hBuyWnd, 0x40A);
+            hBuyBtn = Utility.GetDlgItem(hBuyWnd, 0x3EE);
+            hBuyNameStatic = Utility.GetDlgItem(hBuyWnd, 0x40C);
+            hBuyMaxAmountStatic = Utility.GetDlgItem(hBuyWnd, 0x3FA);
+            hBQuoteWnd = FindDialog(hBuyWnd, new string[] { "涨停", "跌停" }, ref currentCaption);
+            hBQuoteB1PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3FA);
+            hBQuoteB2PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x401);
+            hBQuoteB3PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x402);
+            hBQuoteB4PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x40B);
+            hBQuoteB5PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x40C);
+            hBQuoteS1PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3FD);
+            hBQuoteS2PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3Fe);
+            hBQuoteS3PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x3FF);
+            hBQuoteS4PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x409);
+            hBQuoteS5PriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x408);
+            hBQuoteNowPriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x400);
+            hBQuoteMaxPriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x404);
+            hBQuoteMinPriceStatic = Utility.GetDlgItem(hBQuoteWnd, 0x405);
+        }
         public string Buy_Money(string code, double money)
         {
             string level = "s5";//"s3";
-            string currentCaption = "";
+            
             int msgResult = 0;
 
             lock (locker)
             {
-                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
-                hBuyWnd = WaitForDialog(hFrame, new string[] { "买入股票" }, ref currentCaption);
-                if (hBuyWnd <= 0)
-                    return "ERR:无法定位买入对话框";
-
-                //Utility.SetActiveWindow(hBuySellWnd);
-
-                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
-                //Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                LoadBuyControl();
                 Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-                //Utility.SetFocus(hBuyCodeEdit);
 
                 Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
                 if (!WaitItemIsEqual(hBQuoteNowPriceStatic, "-"))
@@ -785,24 +613,15 @@ namespace THSTrader
                 return "";
             }
         }
-
         public string Buy_Level(string code, long num, string level)
         {
             level = level.ToLower();
-            string currentCaption = "";
             int msgResult = 0;
 
             lock (locker)
             {
-                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
-                hBuyWnd = WaitForDialog(hFrame, new string[] { "买入股票" }, ref currentCaption);
-                if (hBuyWnd <= 0)
-                    return "ERR:无法定位买入对话框";
-
-                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
-                //Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                LoadBuyControl();
                 Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-                //Utility.SetFocus(hBuyCodeEdit);
 
                 Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
                 if (!WaitItemIsEqual(hBQuoteNowPriceStatic, "-"))
@@ -849,23 +668,14 @@ namespace THSTrader
                 return "";
             }
         }
-
         public string Buy(string code, long num, double price)
         {
-            string currentCaption = "";
             int msgResult = 0;
 
             lock (locker)
             {
-                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
-                hBuyWnd = WaitForDialog(hFrame, new string[] { "买入股票" }, ref currentCaption);
-                if (hBuyWnd <= 0)
-                    return "ERR:无法定位买入对话框";
-
-                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F1, 0);
-                //Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                LoadBuyControl();
                 Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-                //Utility.SetFocus(hBuyCodeEdit);
 
                 Utility.SendMessageTimeout(hBuyPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
                 if (!WaitItemIsEqual(hBQuoteNowPriceStatic, "-"))
@@ -913,25 +723,45 @@ namespace THSTrader
             }
         }
 
+        private void LoadSellControl()
+        {
+            string currentCaption = "";
+
+            Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
+            hSellWnd = WaitForDialog(hFrame, new string[] { "卖出股票" }, ref currentCaption);
+            if (hSellWnd <= 0)
+                throw new Exception("无法定位卖出对话框");
+
+            hSellCodeEdit = Utility.GetDlgItem(hSellWnd, 0x408);
+            hSellPriceEdit = Utility.GetDlgItem(hSellWnd, 0x409);
+            hSellAmountEdit = Utility.GetDlgItem(hSellWnd, 0x40A);
+            hSellBtn = Utility.GetDlgItem(hSellWnd, 0x3EE);
+            hSellNameStatic = Utility.GetDlgItem(hSellWnd, 0x40C);
+            hSellMaxAmountStatic = Utility.GetDlgItem(hSellWnd, 0x40E);
+            hSQuoteWnd = FindDialog(hSellWnd, new string[] { "涨停", "跌停" }, ref currentCaption);
+            hSQuoteB1PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3FA);
+            hSQuoteB2PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x401);
+            hSQuoteB3PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x402);
+            hSQuoteB4PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x40B);
+            hSQuoteB5PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x40C);
+            hSQuoteS1PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3FD);
+            hSQuoteS2PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3Fe);
+            hSQuoteS3PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x3FF);
+            hSQuoteS4PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x409);
+            hSQuoteS5PriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x408);
+            hSQuoteNowPriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x400);
+            hSQuoteMaxPriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x404);
+            hSQuoteMinPriceStatic = Utility.GetDlgItem(hSQuoteWnd, 0x405);
+        }
         public string Sell_Percent(string code, double percent)
         {
             string level = "b5";
-            string currentCaption = "";
             int msgResult = 0;
 
             lock (locker)
             {
-                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
-                hSellWnd = WaitForDialog(hFrame, new string[] { "卖出股票" }, ref currentCaption);
-                if (hSellWnd <= 0)
-                    return "ERR:无法定位买卖对话框";
-
-                //Utility.SetActiveWindow(hBuySellWnd);
-
-                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
-                //Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                LoadSellControl();
                 Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "11", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-                //Utility.SetFocus(hSellCodeEdit);
 
                 Utility.SendMessageTimeout(hSellPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
                 if (!WaitItemIsEqual(hSQuoteNowPriceStatic, "-"))
@@ -975,26 +805,15 @@ namespace THSTrader
                 return "";
             }
         }
-
         public string Sell_Level(string code, long num, string level)
         {
             level = level.ToLower();
-            string currentCaption = "";
             int msgResult = 0;
 
             lock (locker)
             {
-                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
-                hSellWnd = WaitForDialog(hFrame, new string[] { "卖出股票" }, ref currentCaption);
-                if (hSellWnd <= 0)
-                    return "ERR:无法定位买卖对话框";
-
-                //Utility.SetActiveWindow(hBuySellWnd);
-
-                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
-                //Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                LoadSellControl();
                 Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "11", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-                //Utility.SetFocus(hSellCodeEdit);
 
                 Utility.SendMessageTimeout(hSellPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
                 if (!WaitItemIsEqual(hSQuoteNowPriceStatic, "-"))
@@ -1038,25 +857,14 @@ namespace THSTrader
                 return "";
             }
         }
-
         public string Sell(string code, long num, double price)
         {
-            string currentCaption = "";
             int msgResult = 0;
 
             lock (locker)
             {
-                Utility.PostMessage(hWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
-                hSellWnd = WaitForDialog(hFrame, new string[] { "卖出股票" }, ref currentCaption);
-                if (hSellWnd <= 0)
-                    return "ERR:无法定位买卖对话框";
-
-                //Utility.SetActiveWindow(hBuySellWnd);
-
-                //Utility.PostMessage(hBuySellWnd, Utility.WM_KEYDOWN, Utility.VK_F2, 0);
-                //Utility.SendMessageTimeout(hBuyCodeEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
+                LoadSellControl();
                 Utility.SendMessageTimeout(hSellCodeEdit, Utility.WM_SETTEXT, 0, "11", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
-                //Utility.SetFocus(hSellCodeEdit);
 
                 Utility.SendMessageTimeout(hSellPriceEdit, Utility.WM_SETTEXT, 0, "", SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out msgResult);
                 if (!WaitItemIsEqual(hSQuoteNowPriceStatic, "-"))
@@ -1099,166 +907,138 @@ namespace THSTrader
             }
         }
 
-        //#region Helper
-        //private bool GetStockDetail(ref string[] strColumnHeader,
-        //    ref string[][] strItems)///, ref bool bUpdated)
-        //{
-        //    int hWnd = GetWindowsHandle();
+        #region Helper
+        private bool GetStockDetail(ref string[] strColumnHeader,
+            ref string[][] strItems)
+        {
+            string currentCaption = "";
+            int outResult = 0;
 
-        //    if (hWnd <= 0)
-        //        return false;
+            lock (locker)
+            {
+                try
+                {
+                    Utility.SendMessageTimeout(hWnd, Utility.WM_COMMAND, WM_ID_HOLD, 0, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out outResult);
+                    hHoldWnd = WaitForDialog(hFrame, new string[] { "可用金额" }, ref currentCaption);
+                    if (hHoldWnd <= 0)
+                        throw new Exception("无法定位持仓对话框");
 
-        //    Utility.SendMessage(hWnd, Utility.WM_COMMAND, WM_ID_HOLD, 0);
+                    hHoldGrid = Utility.GetDlgItem(
+                        Utility.GetDlgItem(
+                            Utility.GetDlgItem(hHoldWnd, 0x417)
+                            , 0xC8)
+                        , 0x417);//表格控件嵌套在两层HexinWnd之内
 
-        //    int hAfxMDIWnd = Utility.FindWindowEx(hWnd, 0, "AfxMDIFrame42s", null);
+                    ClipboardHelper.Save();
+                    Clipboard.Clear();
+                    int outResule = 0;
+                    Utility.SendMessageTimeout(hHoldGrid, (uint)Utility.WM_COMMAND, WM_ID_COPY, 0, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out outResule);
+                    string cbText = Clipboard.GetText(TextDataFormat.UnicodeText);
+                    ClipboardHelper.Restore();
 
-        //    if (hAfxMDIWnd <= 0)
-        //        return false;
+                    string[] strLines = cbText.Split(new string[] { "\r\n" },
+                        StringSplitOptions.RemoveEmptyEntries);
 
-        //    int hDialogWnd = 0;
-        //    int hScrollWnd = 0;
-        //    int hCVirtualGridCtrlWnd = 0;
+                    strColumnHeader = strLines[0].Split(new string[] { "\t" },
+                        StringSplitOptions.RemoveEmptyEntries);
 
-        //    string currentCaption = "";
-        //    if (WaitForDialog(hAfxMDIWnd, new string[] { "资金余额" }, ref currentCaption) == 0)
-        //        return false;
-        //    Thread.Sleep(500);//找到对话框之后充分等待数据传输
+                    string[][] items = new string[strLines.Length - 1][];
 
-        //    while ((hDialogWnd = Utility.FindWindowVisibleEx(hAfxMDIWnd, hDialogWnd, "#32770", null)) > 0)
-        //    {
-        //        while ((hScrollWnd = Utility.FindWindowEx(hDialogWnd, hScrollWnd, "Afx:400000:0", null)) > 0)
-        //        {
-        //            int hScrollWnd2 = Utility.FindWindowEx(hScrollWnd, 0, "AfxWnd42s", null);
+                    for (int i = 1; i < strLines.Length; i++)
+                    {
+                        items[i - 1] = strLines[i].Split(new string[] { "\t" },
+                            StringSplitOptions.RemoveEmptyEntries);
+                    }
 
-        //            if (hScrollWnd2 <= 0)
-        //                return false;
+                    strItems = items;
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+        private bool GetCommissionDetail(ref string[] strColumnHeader,
+            ref string[][] strItems)
+        {
+            string currentCaption = "";
+            int outResult = 0;
 
-        //            hCVirtualGridCtrlWnd = Utility.FindWindowEx(hScrollWnd2, 0, "CVirtualGridCtrl", null);
+            lock (locker)
+            {
+                try
+                {
+                    Utility.SendMessageTimeout(hWnd, Utility.WM_COMMAND, WM_ID_COMMIT, 0, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out outResult);
+                    hCommitWnd = WaitForDialog(hFrame, new string[] { "合同编号" }, ref currentCaption);
+                    if (hCommitWnd <= 0)
+                        throw new Exception("无法定位当日委托对话框");
 
-        //            if (hCVirtualGridCtrlWnd > 0)
-        //                break;
-        //        }
+                    hCommitGrid = Utility.GetDlgItem(
+                        Utility.GetDlgItem(
+                            Utility.GetDlgItem(hCommitWnd, 0x417)
+                            , 0xC8)
+                        , 0x417);//表格控件嵌套在两层HexinWnd之内
 
-        //        if (hCVirtualGridCtrlWnd > 0)
-        //            break;
-        //    }
+                    ClipboardHelper.Save();
+                    Clipboard.Clear();
+                    int outResule = 0;
+                    Utility.SendMessageTimeout(hCommitGrid, (uint)Utility.WM_COMMAND, WM_ID_COPY, 0, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out outResule);
+                    string cbText = Clipboard.GetText(TextDataFormat.UnicodeText);
+                    ClipboardHelper.Restore();
 
+                    string[] strLines = cbText.Split(new string[] { "\r\n" },
+                        StringSplitOptions.RemoveEmptyEntries);
 
-        //    if (hCVirtualGridCtrlWnd <= 0)
-        //        return false;
+                    strColumnHeader = strLines[0].Split(new string[] { "\t" },
+                        StringSplitOptions.RemoveEmptyEntries);
 
-        //    ClipboardHelper.Save();
+                    string[][] items = new string[strLines.Length - 1][];
 
-        //    Clipboard.Clear();
+                    for (int i = 1; i < strLines.Length; i++)
+                    {
+                        items[i - 1] = strLines[i].Split(new string[] { "\t" },
+                            StringSplitOptions.RemoveEmptyEntries);
+                    }
 
-        //    Utility.SendMessage(hCVirtualGridCtrlWnd, Utility.WM_COMMAND, WM_ID_COPY, 0);
-
-        //    try
-        //    {
-        //        IDataObject iData = Clipboard.GetDataObject();
-        //        ClipboardHelper.Restore();
-
-        //        if (iData.GetDataPresent(DataFormats.Text))
-        //        {
-        //            string strShareHold = (string)iData.GetData(DataFormats.UnicodeText);
-
-        //            if (strShareHold.Length < 100)
-        //                return false;
-
-        //            ////bUpdated = !strShareHold.Equals(mOldStrShareHold);
-
-        //            string[] strLines = strShareHold.Split(new string[] { "\r\n" },
-        //                StringSplitOptions.RemoveEmptyEntries);
-
-        //            strColumnHeader = strLines[0].Split(new string[] { "\t" },
-        //                StringSplitOptions.RemoveEmptyEntries);
-
-        //            string[][] items = new string[strLines.Length - 1][];
-
-        //            for (int i = 1; i < strLines.Length; i++)
-        //            {
-        //                items[i - 1] = strLines[i].Split(new string[] { "\t" },
-        //                    StringSplitOptions.RemoveEmptyEntries);
-        //            }
-
-        //            strItems = items;
-        //            ////mOldStrShareHold = strShareHold;
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-
-        //    return true;
-        //}
-
-        //private bool GetCommissionDetail(ref string[] strColumnHeader,
+                    strItems = items;
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+        //private bool GetOrderDetail(ref string[] strColumnHeader,
         //    ref string[][] strItems)
         //{
-        //    int hWnd = GetWindowsHandle();
-
-        //    if (hWnd <= 0)
-        //        return false;
-
-        //    Utility.SendMessage(hWnd, Utility.WM_COMMAND, WM_ID_COMMIT, 0);
-
-        //    int hAfxMDIWnd = Utility.FindWindowEx(hWnd, 0, "AfxMDIFrame42s", null);
-
-        //    if (hAfxMDIWnd <= 0)
-        //        return false;
-
-        //    int hDialogWnd = 0;
-        //    int hScrollWnd = 0;
-        //    int hCVirtualGridCtrlWnd = 0;
-
         //    string currentCaption = "";
-        //    if (WaitForDialog(hAfxMDIWnd, new string[] { "查询日期" }, ref currentCaption) == 0)
-        //        return false;
-        //    Thread.Sleep(500);//找到对话框之后充分等待数据传输
+        //    int outResult = 0;
 
-        //    while ((hDialogWnd = Utility.FindWindowVisibleEx(hAfxMDIWnd, hDialogWnd, "#32770", null)) > 0)
+        //    lock (locker)
         //    {
-        //        while ((hScrollWnd = Utility.FindWindowEx(hDialogWnd, hScrollWnd, "Afx:400000:0", null)) > 0)
+        //        try
         //        {
-        //            int hScrollWnd2 = Utility.FindWindowEx(hScrollWnd, 0, "AfxWnd42s", null);
+        //            Utility.SendMessageTimeout(hWnd, Utility.WM_COMMAND, WM_ID_ORDER, 0, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out outResult);
+        //            hOrderWnd = WaitForDialog(hFrame, new string[] { "合同编号" }, ref currentCaption);
+        //            if (hOrderWnd <= 0)
+        //                throw new Exception("无法定位当日成交对话框");
 
-        //            if (hScrollWnd2 <= 0)
-        //                return false;
+        //            hOrderGrid = Utility.GetDlgItem(
+        //                Utility.GetDlgItem(
+        //                    Utility.GetDlgItem(hOrderWnd, 0x417)
+        //                    , 0xC8)
+        //                , 0x417);//表格控件嵌套在两层HexinWnd之内
 
-        //            hCVirtualGridCtrlWnd = Utility.FindWindowEx(hScrollWnd2, 0, "CVirtualGridCtrl", null);
+        //            ClipboardHelper.Save();
+        //            Clipboard.Clear();
+        //            int outResule = 0;
+        //            Utility.SendMessageTimeout(hOrderGrid, (uint)Utility.WM_COMMAND, WM_ID_COPY, 0, SendMessageTimeoutFlags.SMTO_BLOCK, Utility.timeout, out outResule);
+        //            string cbText = Clipboard.GetText(TextDataFormat.UnicodeText);
+        //            ClipboardHelper.Restore();
 
-        //            if (hCVirtualGridCtrlWnd > 0)
-        //                break;
-        //        }
-
-        //        if (hCVirtualGridCtrlWnd > 0)
-        //            break;
-        //    }
-
-
-        //    if (hCVirtualGridCtrlWnd <= 0)
-        //        return false;
-
-        //    ClipboardHelper.Save();
-
-        //    Clipboard.Clear();
-
-        //    Utility.SendMessage(hCVirtualGridCtrlWnd, Utility.WM_COMMAND, WM_ID_COPY, 0);
-
-        //    try
-        //    {
-        //        IDataObject iData = Clipboard.GetDataObject();
-        //        ClipboardHelper.Restore();
-
-        //        if (iData.GetDataPresent(DataFormats.Text))
-        //        {
-        //            string strShareHold = (string)iData.GetData(DataFormats.UnicodeText);
-
-        //            if (strShareHold.Length < 100)
-        //                return false;
-
-        //            string[] strLines = strShareHold.Split(new string[] { "\r\n" },
+        //            string[] strLines = cbText.Split(new string[] { "\r\n" },
         //                StringSplitOptions.RemoveEmptyEntries);
 
         //            strColumnHeader = strLines[0].Split(new string[] { "\t" },
@@ -1273,173 +1053,191 @@ namespace THSTrader
         //            }
 
         //            strItems = items;
+        //            return true;
+        //        }
+        //        catch
+        //        {
+        //            return false;
         //        }
         //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-
-        //    return true;
         //}
-        //private List<StockHolding> DecodeStockHolding(string[] strColumnHeader,
+        
+        private List<StockHolding> DecodeStockHolding(string[] strColumnHeader,
+            string[][] strItems)
+        {
+            List<StockHolding> listStockHoldings = new List<StockHolding>();
+
+            for (int i = 0; i < strItems.Length; i++)
+                listStockHoldings.Add(new StockHolding());
+
+            for (int i = 0; i < strColumnHeader.Length; i++)
+            {
+                if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Code"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockHoldings[j].Code = strItems[j][i];
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Name"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockHoldings[j].Name = strItems[j][i];
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Balance"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockHoldings[j].Balance = (long)double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_AvaiBalance"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockHoldings[j].AvaiBalance = (long)double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Cost"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockHoldings[j].Cost = double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Price"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockHoldings[j].Price = double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_ProfitAndLossRate"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockHoldings[j].ProfitAndLossRate = double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_ProfitAndLoss"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockHoldings[j].ProfitAndLoss = double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Value"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockHoldings[j].Value = double.Parse(strItems[j][i]);
+                }
+            }
+
+            return listStockHoldings;
+        }
+        private List<StockCommission> DecodeCommission(string[] strColumnHeader,
+            string[][] strItems)
+        {
+            List<StockCommission> listStockCommissions = new List<StockCommission>();
+
+            for (int i = 0; i < strItems.Length; i++)
+                listStockCommissions.Add(new StockCommission());
+
+            for (int i = 0; i < strColumnHeader.Length; i++)
+            {
+                if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Time"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].Time = strItems[j][i];
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Code"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].Code = strItems[j][i];
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Name"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].Name = strItems[j][i];
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Direction"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].Direction = strItems[j][i];
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_OrderPrice"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].OrderPrice = double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_OrderVol"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].OrderVol = (long)double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_DealVol"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].DealVol = (long)double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_CancelVol"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].CancelVol = (long)double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_DealPrice"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].DealPrice = double.Parse(strItems[j][i]);
+                }
+                else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Contract"].Value.ToString())
+                {
+                    for (int j = 0; j < strItems.Length; j++)
+                        listStockCommissions[j].Contract = strItems[j][i];
+                }
+            }
+
+            return listStockCommissions;
+        }
+        //private List<StockOrder> DecodeOrder(string[] strColumnHeader,
         //    string[][] strItems)
         //{
-        //    List<StockHolding> listStockHoldings = new List<StockHolding>();
+        //    List<StockOrder> listStockOrders = new List<StockOrder>();
 
         //    for (int i = 0; i < strItems.Length; i++)
-        //        listStockHoldings.Add(new StockHolding());
+        //        listStockOrders.Add(new StockOrder());
 
         //    for (int i = 0; i < strColumnHeader.Length; i++)
         //    {
-        //        ///StockHolding holding = new StockHolding();
-
-        //        if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Code"].Value.ToString())
+        //        if (strColumnHeader[i] == config.AppSettings.Settings["Order_Contract"].Value.ToString())
         //        {
         //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockHoldings[j].Code = strItems[j][i];
+        //                listStockOrders[j].Contract = strItems[j][i];
         //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Name"].Value.ToString())
+        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Order_Code"].Value.ToString())
         //        {
         //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockHoldings[j].Name = strItems[j][i];
+        //                listStockOrders[j].Code = strItems[j][i];
         //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Balance"].Value.ToString())
+        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Order_Name"].Value.ToString())
         //        {
         //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockHoldings[j].Balance = (long)double.Parse(strItems[j][i]);
+        //                listStockOrders[j].Name = strItems[j][i];
         //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_AvaiBalance"].Value.ToString())
+        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Order_Direction"].Value.ToString())
         //        {
         //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockHoldings[j].AvaiBalance = (long)double.Parse(strItems[j][i]);
+        //                listStockOrders[j].Direction = strItems[j][i];
         //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Cost"].Value.ToString())
+        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Order_DealVol"].Value.ToString())
         //        {
         //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockHoldings[j].Cost = double.Parse(strItems[j][i]);
+        //                listStockOrders[j].DealVol = (long)double.Parse(strItems[j][i]);
         //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Price"].Value.ToString())
+        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Order_DealPrice"].Value.ToString())
         //        {
         //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockHoldings[j].Price = double.Parse(strItems[j][i]);
+        //                listStockOrders[j].DealPrice = double.Parse(strItems[j][i]);
         //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_ProfitAndLossRate"].Value.ToString())
+        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Order_DealValue"].Value.ToString())
         //        {
         //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockHoldings[j].ProfitAndLossRate = double.Parse(strItems[j][i]);
+        //                listStockOrders[j].DealValue = double.Parse(strItems[j][i]);
         //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_ProfitAndLoss"].Value.ToString())
+        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Order_DealNO"].Value.ToString())
         //        {
         //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockHoldings[j].ProfitAndLoss = double.Parse(strItems[j][i]);
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Holding_Value"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockHoldings[j].Value = double.Parse(strItems[j][i]);
+        //                listStockOrders[j].DealNO = strItems[j][i];
         //        }
         //    }
 
-        //    return listStockHoldings;
-        //}
-        //private List<StockCommission> DecodeCommission(string[] strColumnHeader,
-        //    string[][] strItems)
-        //{
-        //    List<StockCommission> listStockCommissions = new List<StockCommission>();
-
-        //    for (int i = 0; i < strItems.Length; i++)
-        //        listStockCommissions.Add(new StockCommission());
-
-        //    for (int i = 0; i < strColumnHeader.Length; i++)
-        //    {
-        //        ///StockCommission holding = new StockCommission();
-
-        //        if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Date"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].Date = strItems[j][i];
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Code"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].Code = strItems[j][i];
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Name"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].Name = strItems[j][i];
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Direction"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].Direction = strItems[j][i];
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_OrderPrice"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].OrderPrice = double.Parse(strItems[j][i]);
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_OrderVol"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].OrderVol = (long)double.Parse(strItems[j][i]);
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Time"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].Time = strItems[j][i];
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_DealVol"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].DealVol = (long)double.Parse(strItems[j][i]);
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_DealPrice"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].DealPrice = double.Parse(strItems[j][i]);
-        //        }
-        //        else if (strColumnHeader[i] == config.AppSettings.Settings["Commission_Contract"].Value.ToString())
-        //        {
-        //            for (int j = 0; j < strItems.Length; j++)
-        //                listStockCommissions[j].Contract = strItems[j][i];
-        //        }
-        //    }
-
-        //    return listStockCommissions;
-        //}
-        //public int GetWindowsHandle()
-        //{
-        //    if (hWnd == 0)
-        //    {
-        //        StringBuilder stringBuilder = new StringBuilder(256);
-        //        while ((hWnd = Utility.FindWindowEx(0, hWnd, null, strMainWindowTitle)) > 0)
-        //        {
-        //            int hToolbar = Utility.FindWindowEx(hWnd, 0, "ToolbarWindow32", null);
-        //            if (hToolbar > 0)
-        //            {
-        //                int hDialog = 0;
-        //                while ((hDialog = Utility.FindWindowEx(hToolbar, hDialog, "#32770", null)) > 0)
-        //                {
-        //                    int hCombobox = 0;
-        //                    while ((hCombobox = Utility.FindWindowEx(hDialog, hCombobox, "ComboBox", null)) > 0)
-        //                    {
-        //                        Utility.SendMessage(hCombobox, Utility.WM_GETTEXT, 256, stringBuilder);
-        //                        string strCaption = stringBuilder.ToString();
-
-        //                        if (strCaption == strSHAccount || strCaption == strSZAccount)
-        //                            return hWnd;
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //        return 0;
-        //    }
-        //    else
-        //        return hWnd;
-
+        //    return listStockOrders;
         //}
 
         private bool WaitWindowEnable(int hWnd)
@@ -1569,7 +1367,6 @@ namespace THSTrader
 
             return false;
         }
-
         private int FindDialog(int hParent, string[] captionArr, ref string currentCaption)
         {
             int hDialog = 0;
@@ -1596,7 +1393,6 @@ namespace THSTrader
 
             return 0;
         }
-
         private int WaitForDialog(int hParent, string[] captionArr, ref string currentCaption)
         {
             uint oldTick = Utility.GetTickCount();
@@ -1613,28 +1409,7 @@ namespace THSTrader
 
             return 0;
         }
-
-        //private int FindButton(int hDialogWnd, string[] captionArr)
-        //{
-        //    int hButton = 0;
-        //    StringBuilder stringBuilder = new StringBuilder(256);
-
-        //    while ((hButton = Utility.FindWindowEx(hDialogWnd, hButton, "Button", null)) > 0)
-        //    {
-        //        Utility.GetWindowText(hButton, stringBuilder, 256);
-
-        //        string strCaption = stringBuilder.ToString();
-
-        //        foreach (string caption in captionArr)
-        //        {
-        //            if (strCaption == caption)
-        //                return hButton;
-        //        }
-        //    }
-
-        //    return 0;
-        //}
-        //#endregion
+        #endregion
 
     }
 }
